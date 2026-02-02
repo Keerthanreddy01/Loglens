@@ -2,10 +2,9 @@
 
 import { useMemo } from "react";
 import { useLogStore } from "@/lib/store";
-import { toast } from "sonner";
 
 export function TopExceptions() {
-  const { patterns, parsedLogs } = useLogStore();
+  const { patterns, parsedLogs, updateFilter, setActiveTab } = useLogStore();
 
   const exceptions = useMemo(() => {
     if (patterns.length === 0) {
@@ -37,7 +36,10 @@ export function TopExceptions() {
   }, [patterns, parsedLogs]);
 
   const handleViewStack = (type: string) => {
-    toast.info(`Viewing stack trace for: ${type.substring(0, 30)}...`);
+    // Extract search term from type (e.g., "Timeout: database" -> "timeout")
+    const searchTerm = type.split(/[:\s]/)[0]?.toLowerCase() || type.substring(0, 20);
+    updateFilter({ search: searchTerm, levels: ["ERROR"] });
+    setActiveTab("live-logs");
   };
 
   if (exceptions.length === 0) {

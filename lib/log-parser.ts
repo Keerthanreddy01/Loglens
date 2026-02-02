@@ -207,36 +207,101 @@ export function generateTimelineData(logs: ParsedLog[]): TimelineDataPoint[] {
     .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
 }
 
+/** Levenshtein distance for similarity matching */
+function levenshteinDistance(a: string, b: string): number {
+  const matrix: number[][] = []
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i]
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      matrix[i][j] = b[i - 1] === a[j - 1]
+        ? matrix[i - 1][j - 1]
+        : Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+    }
+  }
+  return matrix[b.length][a.length]
+}
+
+function normalizeForPattern(msg: string): string {
+  return msg
+    .replace(/\d+/g, 'N')
+    .replace(/req_[a-zA-Z0-9]+/g, 'REQ_ID')
+    .replace(/\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b/gi, 'UUID')
+    .replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, 'IP')
+    .substring(0, 100)
+}
+
+function detectCategory(pattern: string): string {
+  const p = pattern.toLowerCase()
+  if (p.includes('timeout') || p.includes('etimedout') || p.includes('connection refused')) return 'network'
+  if (p.includes('database') || p.includes('query') || p.includes('redis') || p.includes('pool')) return 'database'
+  if (p.includes('auth') || p.includes('unauthorized') || p.includes('token') || p.includes('credentials')) return 'auth'
+  if (p.includes('memory') || p.includes('heap') || p.includes('oom')) return 'memory'
+  if (p.includes('500') || p.includes('api') || p.includes('gateway')) return 'api'
+  if (p.includes('security') || p.includes('403') || p.includes('401')) return 'security'
+  return 'other'
+}
+
 export function detectPatterns(logs: ParsedLog[]): LogPattern[] {
   const errorLogs = logs.filter(l => l.level === 'ERROR')
-  const patternGroups: Map<string, ParsedLog[]> = new Map()
-  
-  // Group by simplified message patterns
+  if (errorLogs.length === 0) return []
+
+  // First pass: exact pattern grouping
+  const exactGroups: Map<string, ParsedLog[]> = new Map()
   for (const log of errorLogs) {
-    // Simplify message to create pattern
-    const pattern = log.message
-      .replace(/\d+/g, 'N') // Replace numbers
-      .replace(/req_[a-zA-Z0-9]+/g, 'REQ_ID') // Replace request IDs
-      .replace(/\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b/gi, 'UUID') // Replace UUIDs
-      .replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, 'IP') // Replace IPs
-      .substring(0, 100) // Limit pattern length
-    
-    const group = patternGroups.get(pattern) || []
+    const pattern = normalizeForPattern(log.message)
+    const group = exactGroups.get(pattern) || []
     group.push(log)
-    patternGroups.set(pattern, group)
+    exactGroups.set(pattern, group)
   }
-  
-  return Array.from(patternGroups.entries())
-    .map(([pattern, logList], index) => ({
-      id: `pattern-${index}`,
-      pattern,
-      count: logList.length,
-      percentage: errorLogs.length > 0 ? (logList.length / errorLogs.length) * 100 : 0,
-      level: 'ERROR' as LogLevel,
-      examples: logList.slice(0, 3).map(l => l.rawLine),
-    }))
+
+  // Second pass: merge similar patterns using Levenshtein (similarity threshold ~70%)
+  const mergedPatterns: { pattern: string; logs: ParsedLog[] }[] = []
+  const processed = new Set<string>()
+
+  for (const [pattern, logList] of Array.from(exactGroups.entries()).sort((a, b) => b[1].length - a[1].length)) {
+    if (processed.has(pattern)) continue
+
+    let mergedLogs = [...logList]
+    processed.add(pattern)
+
+    for (const [otherPattern, otherLogs] of exactGroups) {
+      if (processed.has(otherPattern) || pattern === otherPattern) continue
+      const maxLen = Math.max(pattern.length, otherPattern.length)
+      const distance = levenshteinDistance(pattern, otherPattern)
+      const similarity = 1 - distance / maxLen
+      if (similarity >= 0.7) {
+        mergedLogs = mergedLogs.concat(otherLogs)
+        processed.add(otherPattern)
+      }
+    }
+    mergedPatterns.push({ pattern, logs: mergedLogs })
+  }
+
+  const totalErrors = errorLogs.length
+  return mergedPatterns
+    .map(({ pattern, logs }, index) => {
+      const count = logs.length
+      const percentage = totalErrors > 0 ? (count / totalErrors) * 100 : 0
+      const category = detectCategory(pattern)
+      // Confidence: higher for more occurrences, exact matches, and clear categories
+      const occurrenceScore = Math.min(100, count * 8)
+      const categoryScore = category !== 'other' ? 15 : 0
+      const consistencyScore = count >= 3 ? 20 : count * 5
+      const confidenceScore = Math.min(100, Math.round(occurrenceScore + categoryScore + consistencyScore))
+      return {
+        id: `pattern-${index}`,
+        pattern,
+        count,
+        percentage,
+        level: 'ERROR' as LogLevel,
+        examples: logs.slice(0, 3).map(l => l.rawLine),
+        confidenceScore,
+        category,
+      }
+    })
     .sort((a, b) => b.count - a.count)
-    .slice(0, 10)
+    .slice(0, 15)
 }
 
 export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AIInsight[] {

@@ -58,8 +58,8 @@ export function RightPanel() {
   const selectedIndex = selectedLog ? parsedLogs.findIndex(l => l.id === selectedLogId) : -1;
   const relatedLogs = selectedLog?.requestId
     ? getRelatedLogs(parsedLogs, selectedLog.requestId).filter(
-        (l) => l.id !== selectedLogId
-      )
+      (l) => l.id !== selectedLogId
+    )
     : [];
 
   // Navigation handlers
@@ -86,7 +86,7 @@ export function RightPanel() {
       </button>
     );
   }
-  
+
   if (!selectedLog) {
     return (
       <aside className="w-[320px] border-l border-border bg-card flex flex-col shrink-0">
@@ -171,9 +171,9 @@ export function RightPanel() {
             Log Context
           </h2>
           <div className="flex items-center gap-1">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="h-7 w-7 interactive-element"
               onClick={goToPrevious}
               disabled={selectedIndex <= 0}
@@ -184,9 +184,9 @@ export function RightPanel() {
             <span className="text-xs text-muted-foreground tabular-nums px-1">
               {selectedIndex + 1}/{parsedLogs.length}
             </span>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="h-7 w-7 interactive-element"
               onClick={goToNext}
               disabled={selectedIndex >= parsedLogs.length - 1}
@@ -254,7 +254,6 @@ export function RightPanel() {
             {selectedLog.metadata?.url && (
               <MetadataRow label="URL" value={selectedLog.metadata.url} copyable />
             )}
-            <MetadataRow label="Environment" value="production" />
           </div>
         </section>
 

@@ -35,33 +35,33 @@ import {
 import { toast } from "sonner";
 
 const levelStyles: Record<LogLevel, { badge: string; bg: string; text: string; border: string }> = {
-  ERROR: { 
-    badge: "bg-destructive text-white", 
-    bg: "bg-destructive/5 hover:bg-destructive/10", 
+  ERROR: {
+    badge: "bg-destructive text-white",
+    bg: "bg-destructive/5 hover:bg-destructive/10",
     text: "text-destructive",
     border: "border-l-destructive"
   },
-  WARN: { 
-    badge: "bg-warning text-black", 
-    bg: "bg-warning/5 hover:bg-warning/10", 
+  WARN: {
+    badge: "bg-warning text-black",
+    bg: "bg-warning/5 hover:bg-warning/10",
     text: "text-warning",
     border: "border-l-warning"
   },
-  INFO: { 
-    badge: "bg-primary text-white", 
-    bg: "hover:bg-primary/5", 
+  INFO: {
+    badge: "bg-primary text-white",
+    bg: "hover:bg-primary/5",
     text: "text-primary",
     border: "border-l-primary"
   },
-  DEBUG: { 
-    badge: "bg-muted-foreground text-white", 
-    bg: "hover:bg-muted/30", 
+  DEBUG: {
+    badge: "bg-muted-foreground text-white",
+    bg: "hover:bg-muted/30",
     text: "text-muted-foreground",
     border: "border-l-muted-foreground"
   },
-  TRACE: { 
-    badge: "bg-muted text-foreground", 
-    bg: "hover:bg-muted/20", 
+  TRACE: {
+    badge: "bg-muted text-foreground",
+    bg: "hover:bg-muted/20",
     text: "text-muted-foreground",
     border: "border-l-muted"
   },
@@ -114,8 +114,8 @@ const LogEntry = memo(function LogEntry({ log, isSelected, onSelect, viewMode, i
         "w-full text-left border-l-[3px] transition-all duration-75 log-entry outline-none",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset",
         viewMode === "compact" ? "px-3 py-1.5" : "px-4 py-2.5",
-        isSelected 
-          ? "bg-primary/10 border-l-primary" 
+        isSelected
+          ? "bg-primary/10 border-l-primary"
           : cn(styles.bg, styles.border, "border-l-transparent hover:border-l-current"),
       )}
       style={{ contain: "layout style paint" }}
@@ -127,7 +127,7 @@ const LogEntry = memo(function LogEntry({ log, isSelected, onSelect, viewMode, i
         <span className="text-[11px] font-mono text-primary whitespace-nowrap shrink-0 hidden sm:inline">
           [{log.service}]
         </span>
-        <Badge 
+        <Badge
           className={cn(
             "text-[10px] font-semibold px-1.5 py-0 h-[18px] shrink-0 rounded",
             styles.badge
@@ -188,15 +188,15 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
       const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
-      
+
       if (e.key === "/" && !isInput && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
         searchInputRef.current?.focus();
         return;
       }
-      
+
       if (isInput && e.key !== "Escape") return;
-      
+
       switch (e.key) {
         case "e":
           if (!e.ctrlKey && !e.metaKey) {
@@ -264,17 +264,17 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
           break;
       }
     };
-    
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [setLevelFilter, updateFilter, selectLog, selectedLogId, logs, isLiveTailEnabled, setLiveTail]);
 
   const navigateLog = useCallback((direction: number) => {
     if (logs.length === 0) return;
-    
+
     const currentIndex = selectedLogId ? logs.findIndex((l) => l.id === selectedLogId) : -1;
     let newIndex: number;
-    
+
     if (currentIndex === -1) {
       newIndex = direction > 0 ? 0 : logs.length - 1;
     } else {
@@ -282,7 +282,7 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
       if (newIndex < 0) newIndex = 0;
       if (newIndex >= logs.length) newIndex = logs.length - 1;
     }
-    
+
     const newLog = logs[newIndex];
     if (newLog) {
       selectLog(newLog.id);
@@ -310,10 +310,10 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
   // Track scroll position
   const handleScroll = useCallback(() => {
     if (!scrollContainerRef.current) return;
-    
+
     const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
     const threshold = 50;
-    
+
     setIsAtTop(scrollTop < threshold);
     setIsAtBottom(scrollHeight - scrollTop - clientHeight < threshold);
     setShowScrollButtons(scrollHeight > clientHeight + 100);
@@ -335,9 +335,9 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
   }, []);
 
   const scrollToBottom = useCallback(() => {
-    scrollContainerRef.current?.scrollTo({ 
-      top: scrollContainerRef.current.scrollHeight, 
-      behavior: "smooth" 
+    scrollContainerRef.current?.scrollTo({
+      top: scrollContainerRef.current.scrollHeight,
+      behavior: "smooth"
     });
   }, []);
 
@@ -558,8 +558,8 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
       </div>
 
       {/* Log Entries */}
-      <div 
-        ref={scrollContainerRef} 
+      <div
+        ref={scrollContainerRef}
         className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain touch-pan-y custom-scrollbar"
         onScroll={handleScroll}
         style={{ WebkitOverflowScrolling: "touch" }}
@@ -573,8 +573,8 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
             <p className="text-xs text-muted-foreground mb-4 max-w-xs">
               Try adjusting your search or level filters
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={clearAllFilters}
               className="gap-1.5 h-8 text-xs bg-transparent"

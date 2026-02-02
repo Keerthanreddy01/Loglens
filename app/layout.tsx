@@ -31,17 +31,29 @@ export const metadata: Metadata = {
   },
 }
 
+import { AuthProvider } from '@/components/auth-provider'
+import { ThemeProvider } from '@/components/theme-provider'
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-        {children}
-        <Toaster position="bottom-right" theme="dark" />
-        <Analytics />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+            <Toaster position="bottom-right" theme="dark" />
+            <Analytics />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

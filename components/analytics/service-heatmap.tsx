@@ -18,7 +18,7 @@ function getHeatmapColor(value: number, max: number): string {
 }
 
 export function ServiceHeatmap() {
-  const { parsedLogs, stats } = useLogStore();
+  const { parsedLogs, stats, setActiveTab } = useLogStore();
 
   // Generate heatmap data from actual logs
   const data = useMemo(() => {
@@ -34,8 +34,8 @@ export function ServiceHeatmap() {
       for (let i = 0; i < buckets; i++) {
         const hour = i.toString().padStart(2, "0") + ":00";
         const count = serviceLogs.filter((l) => {
-          const logHour = l.timestamp.getHours();
-          return logHour === i;
+          const ts = l.timestamp instanceof Date ? l.timestamp : new Date(l.timestamp);
+          return ts.getHours() === i;
         }).length;
         bucketData.push({ time: hour, count });
       }
@@ -119,7 +119,7 @@ export function ServiceHeatmap() {
           <Button
             size="sm"
             className="text-xs h-8 bg-primary hover:bg-primary/90"
-            onClick={() => toast.info("Alert configuration coming soon")}
+            onClick={() => setActiveTab("alerts")}
           >
             <Settings className="w-3.5 h-3.5 mr-1.5" />
             Configure Alerts

@@ -2,6 +2,7 @@
 
 import { Sparkles } from "lucide-react";
 import { useLogStore } from "@/lib/store";
+import { Badge } from "@/components/ui/badge";
 
 export function AIInsightCard() {
   const { insights, stats, patterns } = useLogStore();
@@ -37,7 +38,7 @@ export function AIInsightCard() {
     title = primaryInsight.title;
     description = primaryInsight.description;
     recommendation = primaryInsight.recommendation || "Review the logs for more details.";
-    
+
     // Try to extract service name from the insight
     if (topPattern && topPattern.examples[0]) {
       const serviceMatch = topPattern.examples[0].match(/\[([a-zA-Z0-9_-]+)\]/);
@@ -48,11 +49,11 @@ export function AIInsightCard() {
   } else if (stats.errorCount > 0) {
     title = `${stats.errorCount} Errors`;
     description = `Detected ${stats.errorRate.toFixed(1)}% error rate`;
-    
+
     if (topPattern) {
       const patternPreview = topPattern.pattern.substring(0, 40);
       recommendation = `Most common: "${patternPreview}..."`;
-      
+
       const serviceMatch = topPattern.examples[0]?.match(/\[([a-zA-Z0-9_-]+)\]/);
       if (serviceMatch) {
         linkText = serviceMatch[1];
@@ -61,7 +62,7 @@ export function AIInsightCard() {
   }
 
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-gradient-to-br from-primary/5 to-transparent">
+    <div className="flex items-start gap-3 p-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm bg-gradient-to-br from-primary/5 to-transparent shadow-sm">
       <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
       <div className="space-y-1 min-w-0">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -87,6 +88,11 @@ export function AIInsightCard() {
           <p className="text-sm text-muted-foreground">
             Recommendation: {recommendation}
           </p>
+        )}
+        {topPattern && (topPattern.confidenceScore ?? 0) > 0 && (
+          <Badge variant="outline" className="mt-2 text-[10px] font-normal">
+            Confidence: {(topPattern.confidenceScore ?? 0)}%
+          </Badge>
         )}
       </div>
     </div>

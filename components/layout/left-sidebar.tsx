@@ -35,7 +35,7 @@ export function LeftSidebar() {
 
   // Determine active state
   const isAllProduction = !smartFilters.criticalOnly && !smartFilters.performanceIssues && !smartFilters.securityEvents && !smartFilters.userActions;
-  
+
   const resetAllFilters = () => {
     // Reset smart filters
     if (smartFilters.criticalOnly) toggleSmartFilter("criticalOnly");
@@ -66,12 +66,12 @@ export function LeftSidebar() {
 
   // Count logs for each filter
   const errorCount = parsedLogs.filter(l => l.level === 'ERROR').length;
-  const slowQueryCount = parsedLogs.filter(l => 
-    l.rawLine.toLowerCase().includes('slow') || 
+  const slowQueryCount = parsedLogs.filter(l =>
+    l.rawLine.toLowerCase().includes('slow') ||
     l.rawLine.toLowerCase().includes('timeout')
   ).length;
-  const securityCount = parsedLogs.filter(l => 
-    l.rawLine.toLowerCase().includes('auth') || 
+  const securityCount = parsedLogs.filter(l =>
+    l.rawLine.toLowerCase().includes('auth') ||
     l.rawLine.toLowerCase().includes('security')
   ).length;
 
@@ -84,9 +84,9 @@ export function LeftSidebar() {
             Quick Stats
           </h3>
           {parsedLogs.length > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive interactive-element"
               onClick={handleClearLogs}
               title="Clear all logs"
@@ -134,7 +134,7 @@ export function LeftSidebar() {
               </span>
             </div>
           </div>
-          
+
           {/* Additional Stats Grid */}
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="bg-card rounded-md p-2 border border-border">

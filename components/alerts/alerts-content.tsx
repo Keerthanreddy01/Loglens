@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Bell, AlertTriangle, CheckCircle2, Clock, Plus, Settings, X, VolumeX, Volume2, Trash2 } from 'lucide-react'
+import { Bell, AlertTriangle, CheckCircle2, Clock, Plus, Settings, X, VolumeX, Volume2, Trash2, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -23,82 +23,30 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
-
-interface Alert {
-  id: string
-  name: string
-  condition: string
-  severity: 'critical' | 'warning' | 'info'
-  status: 'active' | 'resolved' | 'muted'
-  lastTriggered: string
-  triggerCount: number
-  enabled: boolean
-}
-
-const initialAlerts: Alert[] = [
-  {
-    id: '1',
-    name: 'High Error Rate',
-    condition: 'Error rate > 1% for 5 minutes',
-    severity: 'critical',
-    status: 'active',
-    lastTriggered: '2 minutes ago',
-    triggerCount: 3,
-    enabled: true,
-  },
-  {
-    id: '2',
-    name: 'Redis Connection Failures',
-    condition: 'Redis timeout errors > 10/min',
-    severity: 'critical',
-    status: 'active',
-    lastTriggered: '8 minutes ago',
-    triggerCount: 15,
-    enabled: true,
-  },
-  {
-    id: '3',
-    name: 'Slow Database Queries',
-    condition: 'P99 latency > 500ms',
-    severity: 'warning',
-    status: 'resolved',
-    lastTriggered: '1 hour ago',
-    triggerCount: 7,
-    enabled: true,
-  },
-  {
-    id: '4',
-    name: 'Memory Usage Warning',
-    condition: 'Memory > 80% for 10 minutes',
-    severity: 'warning',
-    status: 'muted',
-    lastTriggered: '3 hours ago',
-    triggerCount: 2,
-    enabled: false,
-  },
-]
+import { useLogStore } from '@/lib/store'
+import type { AlertRule } from '@/lib/types'
 
 const severityConfig = {
-  critical: { color: 'bg-error', textColor: 'text-error', icon: AlertTriangle },
+  critical: { color: 'bg-destructive', textColor: 'text-destructive', icon: AlertTriangle },
   warning: { color: 'bg-warning', textColor: 'text-warning', icon: AlertTriangle },
   info: { color: 'bg-info', textColor: 'text-info', icon: Bell },
 }
 
 const statusConfig = {
-  active: { label: 'Active', color: 'bg-error/10 text-error border-error/20' },
+  active: { label: 'Active', color: 'bg-destructive/10 text-destructive border-destructive/20' },
   resolved: { label: 'Resolved', color: 'bg-success/10 text-success border-success/20' },
   muted: { label: 'Muted', color: 'bg-muted text-muted-foreground border-border' },
 }
 
-function AlertCard({ 
-  alert, 
-  onAcknowledge, 
-  onMute, 
-  onDelete, 
+function AlertCard({
+  alert,
+  onAcknowledge,
+  onMute,
+  onDelete,
   onToggle,
-  onEdit 
-}: { 
-  alert: Alert
+  onEdit,
+}: {
+  alert: AlertRule
   onAcknowledge: () => void
   onMute: () => void
   onDelete: () => void
@@ -108,30 +56,38 @@ function AlertCard({
   const severity = severityConfig[alert.severity]
   const status = statusConfig[alert.status]
   const Icon = severity.icon
-  
+
   return (
-    <div className={cn(
-      'bg-card border border-border rounded-lg p-5 transition-all duration-200 interactive-element',
-      alert.status === 'active' && 'border-l-4 border-l-error',
-      !alert.enabled && 'opacity-60'
-    )}>
+    <div
+      className={cn(
+        'rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-5 transition-all duration-200 hover:border-border interactive-element',
+        alert.status === 'active' && 'border-l-4 border-l-destructive',
+        !alert.enabled && 'opacity-60'
+      )}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className={cn('p-2 rounded-lg shrink-0', alert.status === 'active' ? 'bg-error/10' : 'bg-secondary')}>
-            <Icon className={cn('w-5 h-5', alert.status === 'active' ? 'text-error' : 'text-muted-foreground')} />
+          <div
+            className={cn(
+              'p-2 rounded-lg shrink-0',
+              alert.status === 'active' ? 'bg-destructive/10' : 'bg-secondary'
+            )}
+          >
+            <Icon
+              className={cn(
+                'w-5 h-5',
+                alert.status === 'active' ? 'text-destructive' : 'text-muted-foreground'
+              )}
+            />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-medium text-foreground truncate">{alert.name}</h3>
-              <Switch 
-                checked={alert.enabled} 
-                onCheckedChange={onToggle}
-                className="scale-75"
-              />
+              <Switch checked={alert.enabled} onCheckedChange={onToggle} className="scale-75" />
             </div>
             <p className="text-sm text-muted-foreground">{alert.condition}</p>
             <div className="flex items-center gap-3 mt-2 flex-wrap">
-              <Badge variant="outline" className={cn("text-xs", status.color)}>
+              <Badge variant="outline" className={cn('text-xs', status.color)}>
                 {status.label}
               </Badge>
               <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -146,9 +102,9 @@ function AlertCard({
         </div>
         <div className="flex items-center gap-1 shrink-0">
           {alert.status === 'active' && (
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={onAcknowledge}
               className="text-xs h-8 bg-transparent interactive-element"
             >
@@ -156,12 +112,13 @@ function AlertCard({
               Ack
             </Button>
           )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="h-8 w-8 interactive-element"
             onClick={onMute}
             title={alert.status === 'muted' ? 'Unmute' : 'Mute'}
+            aria-label={alert.status === 'muted' ? 'Unmute alert' : 'Mute alert'}
           >
             {alert.status === 'muted' ? (
               <Volume2 className="w-4 h-4" />
@@ -169,19 +126,21 @@ function AlertCard({
               <VolumeX className="w-4 h-4" />
             )}
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="h-8 w-8 interactive-element"
             onClick={onEdit}
+            aria-label="Edit alert rule"
           >
             <Settings className="w-4 h-4" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="h-8 w-8 text-muted-foreground hover:text-destructive interactive-element"
             onClick={onDelete}
+            aria-label="Delete alert rule"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -192,43 +151,48 @@ function AlertCard({
 }
 
 export function AlertsContent() {
-  const [alerts, setAlerts] = useState<Alert[]>(initialAlerts)
+  const {
+    alertRules,
+    addAlertRule,
+    updateAlertRule,
+    removeAlertRule,
+    patterns,
+    setActiveTab,
+    createAlertFromPattern,
+  } = useLogStore()
+
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [editingAlert, setEditingAlert] = useState<Alert | null>(null)
+  const [editingAlert, setEditingAlert] = useState<AlertRule | null>(null)
   const [newAlert, setNewAlert] = useState({
     name: '',
     condition: '',
     severity: 'warning' as 'critical' | 'warning' | 'info',
   })
 
-  const activeAlerts = alerts.filter(a => a.status === 'active')
-  const otherAlerts = alerts.filter(a => a.status !== 'active')
+  const activeAlerts = alertRules.filter((a) => a.status === 'active')
+  const otherAlerts = alertRules.filter((a) => a.status !== 'active')
 
   const handleAcknowledge = (id: string) => {
-    setAlerts(prev => prev.map(a => 
-      a.id === id ? { ...a, status: 'resolved' as const } : a
-    ))
+    updateAlertRule(id, { status: 'resolved' })
     toast.success('Alert acknowledged')
   }
 
   const handleMute = (id: string) => {
-    setAlerts(prev => prev.map(a => 
-      a.id === id ? { ...a, status: a.status === 'muted' ? 'resolved' as const : 'muted' as const } : a
-    ))
-    const alert = alerts.find(a => a.id === id)
+    const alert = alertRules.find((a) => a.id === id)
+    updateAlertRule(id, {
+      status: alert?.status === 'muted' ? 'resolved' : 'muted',
+    })
     toast.success(alert?.status === 'muted' ? 'Alert unmuted' : 'Alert muted')
   }
 
   const handleDelete = (id: string) => {
-    setAlerts(prev => prev.filter(a => a.id !== id))
+    removeAlertRule(id)
     toast.success('Alert rule deleted')
   }
 
   const handleToggle = (id: string) => {
-    setAlerts(prev => prev.map(a => 
-      a.id === id ? { ...a, enabled: !a.enabled } : a
-    ))
-    const alert = alerts.find(a => a.id === id)
+    const alert = alertRules.find((a) => a.id === id)
+    updateAlertRule(id, { enabled: !alert?.enabled })
     toast.success(alert?.enabled ? 'Alert disabled' : 'Alert enabled')
   }
 
@@ -237,41 +201,41 @@ export function AlertsContent() {
       toast.error('Please fill in all fields')
       return
     }
-
-    const alert: Alert = {
-      id: Date.now().toString(),
+    addAlertRule({
       name: newAlert.name,
       condition: newAlert.condition,
       severity: newAlert.severity,
-      status: 'resolved',
-      lastTriggered: 'Never',
-      triggerCount: 0,
       enabled: true,
-    }
-
-    setAlerts(prev => [...prev, alert])
+    })
     setNewAlert({ name: '', condition: '', severity: 'warning' })
     setIsCreateOpen(false)
     toast.success('Alert rule created')
   }
 
-  const handleEdit = (alert: Alert) => {
-    setEditingAlert(alert)
-  }
+  const handleEdit = (alert: AlertRule) => setEditingAlert(alert)
 
   const handleSaveEdit = () => {
     if (!editingAlert) return
-    
-    setAlerts(prev => prev.map(a => 
-      a.id === editingAlert.id ? editingAlert : a
-    ))
+    updateAlertRule(editingAlert.id, {
+      name: editingAlert.name,
+      condition: editingAlert.condition,
+      severity: editingAlert.severity,
+    })
     setEditingAlert(null)
     toast.success('Alert rule updated')
   }
-  
+
+  const handleCreateFromPattern = (patternId: string) => {
+    const pattern = patterns.find((p) => p.id === patternId)
+    if (pattern) {
+      createAlertFromPattern(pattern)
+      toast.success('Alert created from pattern')
+      setIsCreateOpen(false)
+    }
+  }
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Header - Fixed */}
       <div className="p-6 border-b border-border shrink-0">
         <div className="flex items-center justify-between">
           <div>
@@ -286,25 +250,23 @@ export function AlertsContent() {
           </Button>
         </div>
       </div>
-      
-      {/* Scrollable Content */}
+
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-        {/* Active Alerts */}
         {activeAlerts.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-4">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-error" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
               </span>
               <h2 className="text-sm font-medium text-foreground uppercase tracking-wide">
                 Active Alerts ({activeAlerts.length})
               </h2>
             </div>
             <div className="space-y-3">
-              {activeAlerts.map(alert => (
-                <AlertCard 
-                  key={alert.id} 
+              {activeAlerts.map((alert) => (
+                <AlertCard
+                  key={alert.id}
                   alert={alert}
                   onAcknowledge={() => handleAcknowledge(alert.id)}
                   onMute={() => handleMute(alert.id)}
@@ -316,29 +278,43 @@ export function AlertsContent() {
             </div>
           </section>
         )}
-        
-        {/* Other Alerts */}
+
         <section>
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
             All Rules ({otherAlerts.length})
           </h2>
-          {otherAlerts.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
+          {alertRules.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground rounded-xl border border-dashed border-border bg-card/30">
               <Bell className="w-12 h-12 mx-auto mb-4 opacity-30" />
               <p>No alert rules configured</p>
-              <Button 
-                variant="link" 
-                onClick={() => setIsCreateOpen(true)}
-                className="mt-2"
-              >
+              <Button variant="link" onClick={() => setIsCreateOpen(true)} className="mt-2">
                 Create your first alert
               </Button>
+              {patterns.length > 0 && (
+                <div className="mt-6 pt-6 border-t border-border">
+                  <p className="text-sm mb-3">Or create from detected patterns:</p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {patterns.slice(0, 3).map((p) => (
+                      <Button
+                        key={p.id}
+                        variant="outline"
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => handleCreateFromPattern(p.id)}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        {p.pattern.substring(0, 30)}... ({p.count})
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="space-y-3">
-              {otherAlerts.map(alert => (
-                <AlertCard 
-                  key={alert.id} 
+              {otherAlerts.map((alert) => (
+                <AlertCard
+                  key={alert.id}
                   alert={alert}
                   onAcknowledge={() => handleAcknowledge(alert.id)}
                   onMute={() => handleMute(alert.id)}
@@ -352,20 +328,40 @@ export function AlertsContent() {
         </section>
       </div>
 
-      {/* Create Alert Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-lg bg-card/95 backdrop-blur-xl border-border">
           <DialogHeader>
             <DialogTitle>Create Alert Rule</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
+            {patterns.length > 0 && (
+              <div className="rounded-lg border border-border bg-secondary/30 p-3">
+                <p className="text-xs font-medium text-muted-foreground mb-2">
+                  Create from AI-detected pattern
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {patterns.slice(0, 5).map((p) => (
+                    <Button
+                      key={p.id}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7"
+                      onClick={() => handleCreateFromPattern(p.id)}
+                    >
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      {p.pattern.substring(0, 25)}... ({p.count}×)
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name">Alert Name</Label>
               <Input
                 id="name"
                 placeholder="e.g., High Error Rate"
                 value={newAlert.name}
-                onChange={(e) => setNewAlert(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => setNewAlert((prev) => ({ ...prev, name: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
@@ -374,15 +370,17 @@ export function AlertsContent() {
                 id="condition"
                 placeholder="e.g., Error rate > 1% for 5 minutes"
                 value={newAlert.condition}
-                onChange={(e) => setNewAlert(prev => ({ ...prev, condition: e.target.value }))}
+                onChange={(e) =>
+                  setNewAlert((prev) => ({ ...prev, condition: e.target.value }))
+                }
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="severity">Severity</Label>
-              <Select 
-                value={newAlert.severity} 
-                onValueChange={(value: 'critical' | 'warning' | 'info') => 
-                  setNewAlert(prev => ({ ...prev, severity: value }))
+              <Select
+                value={newAlert.severity}
+                onValueChange={(value: 'critical' | 'warning' | 'info') =>
+                  setNewAlert((prev) => ({ ...prev, severity: value }))
                 }
               >
                 <SelectTrigger>
@@ -400,16 +398,13 @@ export function AlertsContent() {
             <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>
-              Create Alert
-            </Button>
+            <Button onClick={handleCreate}>Create Alert</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Alert Dialog */}
       <Dialog open={!!editingAlert} onOpenChange={() => setEditingAlert(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-lg bg-card/95 backdrop-blur-xl border-border">
           <DialogHeader>
             <DialogTitle>Edit Alert Rule</DialogTitle>
           </DialogHeader>
@@ -420,7 +415,11 @@ export function AlertsContent() {
                 <Input
                   id="edit-name"
                   value={editingAlert.name}
-                  onChange={(e) => setEditingAlert(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  onChange={(e) =>
+                    setEditingAlert((prev) =>
+                      prev ? { ...prev, name: e.target.value } : null
+                    )
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -428,15 +427,21 @@ export function AlertsContent() {
                 <Input
                   id="edit-condition"
                   value={editingAlert.condition}
-                  onChange={(e) => setEditingAlert(prev => prev ? { ...prev, condition: e.target.value } : null)}
+                  onChange={(e) =>
+                    setEditingAlert((prev) =>
+                      prev ? { ...prev, condition: e.target.value } : null
+                    )
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-severity">Severity</Label>
-                <Select 
-                  value={editingAlert.severity} 
-                  onValueChange={(value: 'critical' | 'warning' | 'info') => 
-                    setEditingAlert(prev => prev ? { ...prev, severity: value } : null)
+                <Select
+                  value={editingAlert.severity}
+                  onValueChange={(value: 'critical' | 'warning' | 'info') =>
+                    setEditingAlert((prev) =>
+                      prev ? { ...prev, severity: value } : null
+                    )
                   }
                 >
                   <SelectTrigger>
@@ -455,9 +460,7 @@ export function AlertsContent() {
             <Button variant="outline" onClick={() => setEditingAlert(null)}>
               Cancel
             </Button>
-            <Button onClick={handleSaveEdit}>
-              Save Changes
-            </Button>
+            <Button onClick={handleSaveEdit}>Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

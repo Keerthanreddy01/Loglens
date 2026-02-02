@@ -11,10 +11,10 @@ import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
 function MainContent() {
   const { activeTab, getFilteredLogs } = useLogStore()
   const filteredLogs = getFilteredLogs()
-  
+
   // Initialize keyboard shortcuts
   useKeyboardShortcuts({ filteredLogs })
-  
+
   switch (activeTab) {
     case 'overview':
       return <OverviewContent />

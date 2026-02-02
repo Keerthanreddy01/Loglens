@@ -2,7 +2,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { ParsedLog, LogFilter, LogLevel, SavedQuery, AIInsight, LogPattern } from './types'
+import type { ParsedLog, LogFilter, LogLevel, SavedQuery, AIInsight, LogPattern, AlertRule, AnalysisSession } from './types'
 import { parseLogs, filterLogs, detectPatterns, generateInsights, calculateStats, getUniqueServices, SAMPLE_LOGS } from './log-parser'
 
 interface LogStore {
@@ -49,7 +49,15 @@ interface LogStore {
   viewMode: 'compact' | 'comfortable'
   isPaused: boolean
   bufferedLogs: number
-  
+
+  // Sessions & Alerts
+  savedSessions: AnalysisSession[]
+  alertRules: AlertRule[]
+  comparisonLogs: ParsedLog[] // For multi-file comparison
+
+  // Loading state
+  isLoading: boolean
+
   // Actions
   setRawInput: (input: string) => void
   loadLogs: (input: string) => void
@@ -69,7 +77,25 @@ interface LogStore {
   setViewMode: (mode: 'compact' | 'comfortable') => void
   toggleLogExpanded: (id: string) => void
   setPaused: (paused: boolean) => void
-  
+
+  // Session actions
+  saveSession: (name: string) => void
+  loadSession: (id: string) => void
+  deleteSession: (id: string) => void
+
+  // Alert actions
+  addAlertRule: (rule: Omit<AlertRule, 'id' | 'status' | 'triggerCount' | 'lastTriggered' | 'createdAt'>) => void
+  createAlertFromPattern: (pattern: LogPattern) => void
+  updateAlertRule: (id: string, updates: Partial<AlertRule>) => void
+  removeAlertRule: (id: string) => void
+
+  // Multi-file comparison
+  loadLogsForComparison: (input: string) => void
+  clearComparison: () => void
+
+  // Real-time streaming simulation
+  appendStreamingLogs: (logs: ParsedLog[]) => void
+
   // Computed (derived from state)
   getFilteredLogs: () => ParsedLog[]
 }
@@ -135,6 +161,10 @@ export const useLogStore = create<LogStore>()(
       viewMode: 'comfortable',
       isPaused: false,
       bufferedLogs: 0,
+      savedSessions: [],
+      alertRules: [],
+      comparisonLogs: [],
+      isLoading: false,
 
       setRawInput: (input) => set({ rawInput: input }),
       
@@ -223,7 +253,94 @@ export const useLogStore = create<LogStore>()(
         })),
       
       setPaused: (paused) => set({ isPaused: paused }),
-      
+
+      saveSession: (name) => {
+        const state = get()
+        const session: AnalysisSession = {
+          id: `session-${Date.now()}`,
+          name,
+          createdAt: new Date().toISOString(),
+          rawInput: state.rawInput,
+          parsedLogs: state.parsedLogs,
+          filter: state.filter,
+          stats: state.stats,
+          patterns: state.patterns,
+          insights: state.insights,
+        }
+        set((s) => ({ savedSessions: [session, ...s.savedSessions].slice(0, 20) }))
+      },
+
+      loadSession: (id) => {
+        const state = get()
+        const session = state.savedSessions.find((s) => s.id === id)
+        if (session) {
+          set({
+            rawInput: session.rawInput,
+            parsedLogs: session.parsedLogs,
+            filter: session.filter,
+            stats: session.stats,
+            patterns: session.patterns,
+            insights: session.insights,
+          })
+        }
+      },
+
+      deleteSession: (id) =>
+        set((s) => ({ savedSessions: s.savedSessions.filter((x) => x.id !== id) })),
+
+      addAlertRule: (rule) => {
+        const newRule: AlertRule = {
+          ...rule,
+          id: `alert-${Date.now()}`,
+          status: 'resolved',
+          triggerCount: 0,
+          lastTriggered: 'Never',
+          createdAt: new Date().toISOString(),
+        }
+        set((s) => ({ alertRules: [...s.alertRules, newRule] }))
+      },
+
+      createAlertFromPattern: (pattern) => {
+        const severity = (pattern.confidenceScore ?? 80) > 90 ? 'critical' as const : (pattern.confidenceScore ?? 80) > 70 ? 'warning' as const : 'info' as const
+        get().addAlertRule({
+          name: `Pattern: ${pattern.pattern.substring(0, 40)}${pattern.pattern.length > 40 ? '...' : ''}`,
+          condition: `Error pattern "${pattern.pattern.substring(0, 30)}..." occurs > ${Math.max(2, pattern.count - 1)} times`,
+          pattern: pattern.pattern,
+          severity,
+          enabled: true,
+        })
+      },
+
+      updateAlertRule: (id, updates) =>
+        set((s) => ({
+          alertRules: s.alertRules.map((r) => (r.id === id ? { ...r, ...updates } : r)),
+        })),
+
+      removeAlertRule: (id) =>
+        set((s) => ({ alertRules: s.alertRules.filter((r) => r.id !== id) })),
+
+      loadLogsForComparison: (input) => {
+        const parsed = parseLogs(input)
+        set({ comparisonLogs: parsed })
+      },
+
+      clearComparison: () => set({ comparisonLogs: [] }),
+
+      appendStreamingLogs: (logs) => {
+        const state = get()
+        const newLogs = [...state.parsedLogs, ...logs]
+        const patterns = detectPatterns(newLogs)
+        const insights = generateInsights(newLogs, patterns)
+        const stats = calculateStats(newLogs)
+        set({
+          parsedLogs: newLogs,
+          bufferedLogs: state.bufferedLogs + logs.length,
+          patterns,
+          insights,
+          stats,
+        })
+      },
+
       getFilteredLogs: () => {
         const state = get()
         let logs = state.parsedLogs
@@ -279,6 +396,8 @@ export const useLogStore = create<LogStore>()(
         insights: state.insights,
         patterns: state.patterns,
         stats: state.stats,
+        savedSessions: state.savedSessions,
+        alertRules: state.alertRules,
       }),
     }
   )

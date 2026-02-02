@@ -12,18 +12,16 @@ const tabs = [
 ] as const
 
 export function SecondaryNav() {
-  const { activeTab, setActiveTab, stats, parsedLogs } = useLogStore()
-  
-  // Count active alerts (simulated - in real app would come from alerts state)
-  const activeAlertsCount = stats.errorRate > 5 ? 2 : 0
-  
+  const { activeTab, setActiveTab, stats, parsedLogs, alertRules } = useLogStore()
+  const activeAlertsCount = alertRules.filter(a => a.status === 'active').length || (stats.errorRate > 5 ? 1 : 0)
+
   return (
     <div className="h-12 border-b border-border bg-background flex items-center px-4 gap-1 shrink-0">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id
         const showBadge = tab.id === 'alerts' && activeAlertsCount > 0
         const showLogCount = tab.id === 'live-logs' && parsedLogs.length > 0
-        
+
         return (
           <button
             key={tab.id}
@@ -37,8 +35,8 @@ export function SecondaryNav() {
           >
             {tab.label}
             {showBadge && (
-              <Badge 
-                variant="destructive" 
+              <Badge
+                variant="destructive"
                 className="h-5 min-w-[20px] px-1.5 text-[10px] font-semibold animate-pulse"
               >
                 {activeAlertsCount}
@@ -52,10 +50,10 @@ export function SecondaryNav() {
           </button>
         )
       })}
-      
+
       {/* Spacer */}
       <div className="flex-1" />
-      
+
       {/* Quick status indicator */}
       {parsedLogs.length > 0 && (
         <div className="flex items-center gap-3 text-xs text-muted-foreground">

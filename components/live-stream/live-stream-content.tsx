@@ -14,6 +14,7 @@ import {
   X,
   RotateCcw,
 } from "lucide-react";
+import { VirtualLogList } from "@/components/logs-viewer/virtual-log-list";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogStore } from "@/lib/store";
+import { parseLogs, SAMPLE_LOGS } from "@/lib/log-parser";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { LogLevel, ParsedLog } from "@/lib/types";
@@ -103,13 +105,44 @@ export function LiveStreamContent() {
     setLiveTail,
     getFilteredLogs,
     setLevelFilter,
+    appendStreamingLogs,
   } = useLogStore();
 
   const [isPaused, setIsPaused] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [localSearch, setLocalSearch] = useState(filter.search);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const streamIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Real-time streaming simulation
+  useEffect(() => {
+    if (!isStreaming) {
+      if (streamIntervalRef.current) {
+        clearInterval(streamIntervalRef.current);
+        streamIntervalRef.current = null;
+      }
+      return;
+    }
+    const sampleLines = SAMPLE_LOGS.split("\n").filter((l) => l.trim());
+    let index = 0;
+    streamIntervalRef.current = setInterval(() => {
+      const batch = sampleLines.slice(index, index + 3);
+      index = (index + 3) % sampleLines.length;
+      if (batch.length > 0) {
+        const newLogs = parseLogs(batch.join("\n"));
+        const baseId = Date.now();
+        newLogs.forEach((l, i) => {
+          (l as { id?: string }).id = `stream-${baseId}-${i}`;
+        });
+        appendStreamingLogs(newLogs);
+      }
+    }, 1500);
+    return () => {
+      if (streamIntervalRef.current) clearInterval(streamIntervalRef.current);
+    };
+  }, [isStreaming, appendStreamingLogs]);
 
   // Debounced search
   useEffect(() => {
@@ -313,6 +346,27 @@ export function LiveStreamContent() {
 
           <div className="ml-auto flex items-center gap-2">
             <Button
+              variant={isStreaming ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setIsStreaming(!isStreaming);
+                toast.info(isStreaming ? "Stream simulation stopped" : "Stream simulation started");
+              }}
+              className={isStreaming ? "bg-success hover:bg-success/90" : ""}
+            >
+              {isStreaming ? (
+                <>
+                  <span className="relative flex h-2 w-2 mr-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                  </span>
+                  Simulating
+                </>
+              ) : (
+                "Simulate Stream"
+              )}
+            </Button>
+            <Button
               variant="outline"
               size="sm"
               onClick={() => {
@@ -399,18 +453,35 @@ export function LiveStreamContent() {
         </div>
       )}
 
-      {/* Log Viewer */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto bg-card log-viewer-scroll">
+      {/* Log Viewer - Virtual scroll for 500+ logs */}
+      <div ref={scrollContainerRef} className="flex-1 flex flex-col min-h-0 bg-card">
         {filteredLogs.length > 0 ? (
-          filteredLogs.map((log, index) => (
-            <LogRow
-              key={log.id}
-              log={log}
-              isSelected={selectedLogId === log.id}
-              onSelect={() => selectLog(log.id)}
-              index={index}
+          filteredLogs.length >= 500 ? (
+            <VirtualLogList
+              logs={filteredLogs}
+              renderRow={(log, index) => (
+                <LogRow
+                  log={log}
+                  isSelected={selectedLogId === log.id}
+                  onSelect={() => selectLog(log.id)}
+                  index={index}
+                />
+              )}
+              className="log-viewer-scroll"
             />
-          ))
+          ) : (
+            <div className="flex-1 overflow-y-auto log-viewer-scroll">
+              {filteredLogs.map((log, index) => (
+                <LogRow
+                  key={log.id}
+                  log={log}
+                  isSelected={selectedLogId === log.id}
+                  onSelect={() => selectLog(log.id)}
+                  index={index}
+                />
+              ))}
+            </div>
+          )
         ) : (
           <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-muted-foreground p-8">
             <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
