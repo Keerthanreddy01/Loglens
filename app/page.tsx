@@ -357,7 +357,7 @@ export default function LandingPage() {
           {/* Section Header */}
           <div className="mb-20 text-center">
             <SectionBadge>Log Intelligence</SectionBadge>
-            <h2 className="mt-8 text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h2 className="mt-8 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
               Production observability,
               <br />
               <span className="text-shine">reimagined.</span>
@@ -375,7 +375,7 @@ export default function LandingPage() {
                 <Sparkles className="h-3.5 w-3.5" />
                 Intelligence Engine 2.0
               </motion.div>
-              <h3 className="text-4xl font-extrabold text-white sm:text-5xl tracking-tight leading-tight">
+              <h3 className="text-3xl font-extrabold text-white sm:text-4xl tracking-tight leading-tight">
                 AI-assisted
                 <br />
                 troubleshooting.
@@ -449,7 +449,7 @@ export default function LandingPage() {
           </div>
 
           {/* Dashboard Preview Section */}
-          <div className="relative mt-48">
+          <div className="relative mt-32">
             <div className="text-center mb-20">
               <SectionBadge>Platform Overview</SectionBadge>
               <h3 className="mt-6 text-3xl font-extrabold text-white sm:text-5xl tracking-tight">Everything at a glance.</h3>
@@ -576,7 +576,7 @@ export default function LandingPage() {
           </div>
 
           {/* Value Cards - Ultra Premium */}
-          <div className="mt-48 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="relative mt-32 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: Zap, title: "Nano-latency", desc: "Sub-millisecond ingestion times at any scale, guaranteed.", color: "from-amber-500 to-orange-500" },
               { icon: Shield, title: "Zero Knowledge", desc: "E2E encryption where your logs never touch our disks in plaintext.", color: "from-emerald-500 to-teal-500" },
