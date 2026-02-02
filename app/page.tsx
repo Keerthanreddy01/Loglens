@@ -605,7 +605,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section - Glass Style */}
-      <section id="pricing" className="relative py-48 border-t border-white/5">
+      <section id="pricing" className="relative py-32 border-t border-white/5">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="text-center mb-20">
             <SectionBadge>Pricing Ecosystem</SectionBadge>
@@ -692,14 +692,14 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="relative py-48 overflow-hidden border-t border-white/5">
+      <section className="relative py-32 overflow-hidden border-t border-white/5">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            <h2 className="text-6xl font-extrabold text-white sm:text-8xl tracking-tight leading-[0.9]">
+            <h2 className="text-6xl font-extrabold text-white sm:text-7xl tracking-tight leading-[0.9]">
               Ready to <span className="text-shine italic">accelerate?</span>
             </h2>
             <p className="mx-auto mt-10 max-w-xl text-xl text-zinc-500 font-light leading-relaxed">
