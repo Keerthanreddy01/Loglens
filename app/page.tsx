@@ -210,7 +210,7 @@ export default function LandingPage() {
         >
           {/* Logo Title (Massive Neptune Style) */}
           <motion.h1
-            className="text-[14vw] font-black uppercase tracking-[-0.05em] leading-[0.8] text-white"
+            className="text-[10vw] font-black uppercase tracking-[-0.05em] leading-[0.8] text-white"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5, delay: 0.2 }}
@@ -220,7 +220,7 @@ export default function LandingPage() {
 
           {/* Tagline (Huge & Minimal) */}
           <motion.h2
-            className="mt-12 max-w-6xl text-center text-4xl font-light tracking-tight text-white sm:text-6xl lg:text-7xl leading-[1.1]"
+            className="mt-10 max-w-5xl text-center text-4xl font-light tracking-tight text-white sm:text-5xl lg:text-6xl leading-[1.1]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
@@ -230,7 +230,7 @@ export default function LandingPage() {
 
           {/* Subheader / Status Line */}
           <motion.div
-            className="mt-16 flex flex-col items-center gap-4"
+            className="mt-12 flex flex-col items-center gap-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1 }}
@@ -352,7 +352,7 @@ export default function LandingPage() {
       </section>
 
       {/* Replaced Features Section with Interactive Demo */}
-      <section id="features" className="relative py-32 overflow-hidden border-t border-white/5 bg-black/50">
+      <section id="features" className="relative py-24 overflow-hidden border-t border-white/5 bg-black/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           {/* Section Header */}
           <div className="mb-20 text-center">
