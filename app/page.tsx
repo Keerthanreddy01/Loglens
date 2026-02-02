@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -26,7 +26,7 @@ export default function LandingPage() {
       {/* Subtle ambient background */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-900/10 via-black to-black pointer-events-none" />
 
-      {/* Navigation */}
+      {/* Navigation - Slash Style */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-black/80 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex h-16 items-center justify-between">
@@ -78,7 +78,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section - Slash Typography Style */}
       <section className="relative pt-24 pb-16 px-6">
         <div className="mx-auto max-w-6xl text-center">
           <motion.h1
@@ -87,516 +87,411 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-serif leading-[1.1] mb-8"
           >
-            Coupled with{" "}
-            <em className="font-serif italic">intelligent</em> tools
+            Log intelligence built for{" "}
+            <em className="font-serif italic">builders</em>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-xl text-zinc-400 max-w-2xl mx-auto mb-12"
+            className="text-lg text-zinc-400 max-w-xl mx-auto mb-10"
           >
-            Complete any log analysis task in just a few clicks.
+            Production-grade log analysis with AI-powered pattern detection,
+            real-time streaming, and zero infrastructure.
           </motion.p>
 
-          {/* Feature Cards Grid */}
-          <div className="grid md:grid-cols-3 gap-6 mt-20">
-            {/* AI Pattern Detection Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 border border-white/10 p-8 hover:border-white/20 transition-all"
-            >
-              {/* Mock Dashboard Content */}
-              <div className="mb-6 rounded-2xl bg-black/40 p-4 border border-white/5">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/20">
-                      <Terminal className="w-4 h-4 text-amber-400" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs text-zinc-500">AI Detection</div>
-                      <div className="text-sm font-semibold">Active</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-zinc-600" />
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/20">
-                      <Shield className="w-4 h-4 text-amber-400" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs text-zinc-500">Pattern Match</div>
-                      <div className="text-sm font-semibold">$1,024.87</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-zinc-600" />
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/20">
-                      <BarChart3 className="w-4 h-4 text-amber-400" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs text-zinc-500">Analytics</div>
-                      <div className="text-sm font-semibold">$5,242.13</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-zinc-600" />
-                  </div>
-
-                  <div className="flex items-center gap-3 opacity-50">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-800">
-                      <Sparkles className="w-4 h-4 text-zinc-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs text-zinc-500">Insights</div>
-                      <div className="text-sm font-semibold">$14,521.38</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-zinc-600" />
-                  </div>
-                </div>
-              </div>
-
-              <h3 className="text-xl font-semibold mb-2">Smart Detection.</h3>
-              <p className="text-sm text-zinc-500">
-                AI automatically identifies critical errors and patterns in real-time.
-              </p>
-            </motion.div>
-
-            {/* Real-time Analytics Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 border border-white/10 p-8 hover:border-white/20 transition-all"
-            >
-              {/* Mock Analytics Chart */}
-              <div className="mb-6 rounded-2xl bg-black/40 p-4 border border-white/5">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="text-xs text-zinc-500">Total spend</div>
-                  <div className="text-xs text-zinc-600">This week</div>
-                </div>
-                <div className="text-3xl font-bold mb-4">$68,026.43</div>
-
-                {/* Mini chart bars */}
-                <div className="flex items-end gap-2 h-24">
-                  {[40, 60, 45, 70, 55, 80, 65].map((height, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-t-sm bg-gradient-to-t from-amber-600/40 to-amber-400/60"
-                      style={{ height: `${height}%` }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <h3 className="text-xl font-semibold mb-2">Analytics.</h3>
-              <p className="text-sm text-zinc-500">
-                Get real-time insights and financial trends for each log stream.
-              </p>
-            </motion.div>
-
-            {/* Auto Processing Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 border border-white/10 p-8 hover:border-white/20 transition-all"
-            >
-              {/* Mock Auto Transfer UI */}
-              <div className="mb-6 rounded-2xl bg-black/40 p-6 border border-white/5">
-                <div className="flex items-center justify-center gap-6 mb-4">
-                  <div className="text-center">
-                    <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mx-auto mb-2">
-                      <Zap className="w-6 h-6 text-amber-400" />
-                    </div>
-                    <div className="text-xs font-medium">Live</div>
-                    <div className="text-xs text-zinc-600">$420,584.04</div>
-                  </div>
-
-                  <ArrowRight className="w-5 h-5 text-amber-500" />
-
-                  <div className="text-center">
-                    <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mx-auto mb-2">
-                      <Terminal className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-xs font-medium">Archive</div>
-                    <div className="text-xs text-zinc-600">$2,134.01</div>
-                  </div>
-                </div>
-
-                <div className="text-center pt-3 border-t border-white/5">
-                  <div className="text-xs text-amber-500 font-medium mb-1">⚡ Processing active</div>
-                  <div className="text-xs text-zinc-600">Auto top-up enabled</div>
-                </div>
-              </div>
-
-              <h3 className="text-xl font-semibold mb-2">Auto Processing.</h3>
-              <p className="text-sm text-zinc-500">
-                Automatic log processing when volume increases.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Second Hero Section */}
-      <section className="relative py-24 px-6">
-        <div className="mx-auto max-w-6xl text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-serif leading-[1.1] mb-8"
-          >
-            A <em className="italic">strong</em> financial
-            <br />
-            foundation
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-zinc-400 max-w-3xl mx-auto mb-20"
-          >
-            High-performance log analysis, AI-powered insights for engineering teams,
-            and flexible infrastructure to fuel your development.
-          </motion.p>
-
-          {/* Product Showcase */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* 3D Shield Visual */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="relative aspect-square rounded-3xl bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 border border-white/10 p-12 flex items-center justify-center overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-tr from-amber-900/20 via-transparent to-transparent" />
-              {/* 3D Shield mockup */}
-              <div className="relative w-64 h-64">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-zinc-900/20 rounded-[3rem] blur-3xl" />
-                <div className="relative w-full h-full rounded-[3rem] bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center">
-                  <Shield className="w-32 h-32 text-amber-500/40" />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Credit Approved Card */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="relative aspect-square rounded-3xl bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 border border-white/10 p-12 flex flex-col justify-center overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/10 via-transparent to-transparent" />
-
-              <div className="relative space-y-8">
-                {/* Toast Notification */}
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                  <Sparkles className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-medium text-emerald-400">Analysis complete!</span>
-                </div>
-
-                {/* Large Number Display */}
-                <div>
-                  <div className="text-6xl font-bold mb-2">$90,000.00</div>
-                  <button className="text-sm text-zinc-500 hover:text-white transition-colors flex items-center gap-1">
-                    View details <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Auto-Pay Toggle */}
-                <div className="rounded-2xl bg-black/40 border border-white/5 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-medium">Processing Auto-Run</span>
-                    <div className="w-12 h-7 rounded-full bg-emerald-500 relative">
-                      <div className="absolute right-1 top-1 w-5 h-5 rounded-full bg-white" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-zinc-500">Next run:</span>
-                      <span>April, 05</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-zinc-500">Estimated cost:</span>
-                      <span className="font-semibold">$3,750</span>
-                    </div>
-                    <div className="mt-3 h-1 rounded-full bg-zinc-800">
-                      <div className="h-full w-1/3 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="text-xs text-zinc-600">Processing progress</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Dashboard Preview Section */}
-      <section className="relative py-24 px-6">
-        <div className="mx-auto max-w-7xl">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-serif leading-[1.1] mb-8 text-center max-w-4xl mx-auto"
-          >
-            A <em className="italic">higher standard</em>
-            <br />
-            in log intelligence
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-zinc-400 max-w-3xl mx-auto mb-20 text-center"
-          >
-            Analysis, search, patterns,{" "}
-            <sup className="text-xs">1</sup> insights,{" "}
-            <sup className="text-xs">4</sup> anomalies,{" "}
-            <sup className="text-xs">6</sup> and more. All on one platform.
-          </motion.p>
-
-          {/* Dashboard Mockup */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex items-center justify-center gap-4 mb-16"
+          >
+            <Link href="/dashboard">
+              <Button className="h-12 px-8 bg-white text-black hover:bg-zinc-200 rounded-full text-base font-medium">
+                Get Started
+              </Button>
+            </Link>
+            <Link href="#demo">
+              <Button variant="outline" className="h-12 px-8 border-white/10 text-white hover:bg-white/5 rounded-full text-base font-medium">
+                View Demo
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Hero Dashboard Preview - Using Original LogLens Design */}
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.4 }}
+          className="mx-auto max-w-5xl"
+        >
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 p-1.5">
+            <div className="relative overflow-hidden rounded-2xl bg-zinc-950">
+              {/* Browser Chrome */}
+              <div className="flex items-center gap-1.5 border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-xl">
+                <div className="flex gap-1.5">
+                  <div className="h-2.5 w-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500/20 border border-amber-500/40" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-emerald-500/20 border border-emerald-500/40" />
+                </div>
+                <div className="ml-6 flex h-5 w-48 rounded-full bg-white/5" />
+              </div>
+
+              {/* Dashboard Content */}
+              <div className="p-8 md:p-12">
+                <div className="grid grid-cols-12 gap-6 h-full">
+                  {/* Left Column: Analytics Stats */}
+                  <div className="col-span-12 md:col-span-4 space-y-6">
+                    {[
+                      { label: "Throughput", value: "128k", unit: "req/s", color: "amber" },
+                      { label: "Error Rate", value: "0.02", unit: "%", color: "emerald" },
+                      { label: "Latency", value: "14", unit: "ms", color: "amber" }
+                    ].map((stat, i) => (
+                      <motion.div
+                        key={stat.label}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.6 + i * 0.1 }}
+                        className="rounded-2xl border border-white/5 bg-white/[0.02] p-6"
+                      >
+                        <div className="text-sm font-medium text-zinc-500">{stat.label}</div>
+                        <div className="mt-2 flex items-baseline gap-2">
+                          <span className="text-3xl font-bold text-white tracking-tight">{stat.value}</span>
+                          <span className="text-zinc-500 text-sm">{stat.unit}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Right Column: Visualization */}
+                  <div className="col-span-12 md:col-span-8 relative">
+                    <div className="h-full rounded-2xl border border-white/5 bg-black/40 p-8">
+                      <div className="flex items-center justify-between mb-8">
+                        <div className="text-sm font-medium text-zinc-400">System Health / Real-time</div>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-1 w-3 rounded-full bg-amber-500/30" />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        {[40, 70, 50, 90, 60].map((w, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${w}%` }}
+                            transition={{ duration: 1.5, delay: 0.8 + i * 0.1 }}
+                            className="h-2 rounded-full bg-gradient-to-r from-amber-600/40 to-transparent"
+                          />
+                        ))}
+                      </div>
+
+                      <div className="mt-12 space-y-3 font-mono text-[10px]">
+                        {[
+                          { time: "12:04:21", type: "INFO", msg: "Worker node 42 initialized" },
+                          { time: "12:04:22", type: "WARN", msg: "Memory pressure above 80%" },
+                          { time: "12:04:23", type: "INFO", msg: "Cleaning cache in us-east-1" },
+                        ].map((log, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 1.2 + i * 0.1 }}
+                            className="flex gap-4 text-zinc-600"
+                          >
+                            <span>[{log.time}]</span>
+                            <span className={log.type === "WARN" ? "text-amber-500/60" : "text-emerald-500/60"}>{log.type}</span>
+                            <span className="text-zinc-400">{log.msg}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Ambient glow */}
+            <div className="absolute -inset-0.5 bg-gradient-to-tr from-amber-500/10 to-orange-500/10 blur-xl opacity-50 -z-10" />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Features Section - Slash Card Style */}
+      <section className="relative py-24 px-6">
+        <div className="mx-auto max-w-6xl text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative rounded-3xl overflow-hidden border border-white/10 bg-zinc-950"
+            className="text-4xl md:text-6xl font-serif leading-[1.1] mb-6"
           >
-            {/* Top Bar */}
-            <div className="border-b border-white/5 bg-black/40 backdrop-blur-xl">
-              <div className="flex items-center justify-between px-6 py-4">
-                <div className="flex items-center gap-6">
-                  <div className="text-sm font-medium">LogLens</div>
-                  <div className="flex items-center gap-4 text-sm text-zinc-500">
-                    <button className="hover:text-white transition-colors">Home</button>
-                    <button className="hover:text-white transition-colors">Cards</button>
-                    <button className="hover:text-white transition-colors">Transactions</button>
-                    <button className="hover:text-white transition-colors">Payments</button>
-                    <button className="hover:text-white transition-colors">Accounts</button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800" />
-                </div>
-              </div>
+            Production observability,
+            <br />
+            <em className="italic">reimagined</em>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-xl text-zinc-400 max-w-2xl mx-auto"
+          >
+            AI-powered insights and real-time analysis for modern engineering teams.
+          </motion.p>
+        </div>
+
+        <div className="mx-auto max-w-7xl grid md:grid-cols-3 gap-8">
+          {/* AI Pattern Detection */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 p-8 hover:border-white/20 transition-all"
+          >
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-500/10 mb-6">
+              <Sparkles className="w-6 h-6 text-amber-400" />
             </div>
+            <h3 className="text-xl font-semibold mb-3">AI Pattern Detection</h3>
+            <p className="text-zinc-400 leading-relaxed">
+              Automatically identify critical errors, patterns, and anomalies with confidence scores.
+            </p>
+          </motion.div>
 
-            {/* Dashboard Content */}
-            <div className="grid md:grid-cols-[300px_1fr_300px]">
-              {/* Left Sidebar */}
-              <div className="border-r border-white/5 bg-black/20 p-6 space-y-6">
-                <div>
-                  <div className="text-xs text-zinc-600 uppercase tracking-wider mb-3">Navigation</div>
-                  <div className="space-y-1">
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Home
-                    </button>
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Cards
-                    </button>
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm bg-white/5 text-white">
-                      Transactions
-                    </button>
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Payments
-                    </button>
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Accounts
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-xs text-zinc-600 uppercase tracking-wider mb-3">Add-ons</div>
-                  <div className="space-y-1">
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Virtual Accounts
-                    </button>
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Invoicing
-                    </button>
-                    <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-zinc-400 hover:bg-white/5 hover:text-white transition-colors">
-                      Analytics
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Center Content */}
-              <div className="p-8">
-                {/* Balance Card with Chart */}
-                <div className="rounded-2xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/50 border border-white/10 p-6 mb-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <div className="text-sm text-zinc-500 mb-1">Current balance</div>
-                      <div className="text-4xl font-bold">$1,652,342<span className="text-zinc-600">.90</span></div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="px-3 py-1 rounded-lg text-xs bg-white/10 text-white">Balance</button>
-                      <button className="px-3 py-1 rounded-lg text-xs text-zinc-500">Card Spend</button>
-                      <button className="px-3 py-1 rounded-lg text-xs text-zinc-500 flex items-center gap-1">
-                        This Week <ChevronDown className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Area Chart with Gradient */}
-                  <div className="relative h-40">
-                    <svg className="w-full h-full" viewBox="0 0 600 160" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="rgb(217, 119, 6)" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="rgb(217, 119, 6)" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M0,120 L75,100 L150,80 L225,40 L300,60 L375,30 L450,50 L525,70 L600,90"
-                        fill="url(#chartGradient)"
-                        stroke="rgb(217, 119, 6)"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                    <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 text-[10px] text-zinc-600">
-                      <span>MON</span>
-                      <span>TUE</span>
-                      <span>WED</span>
-                      <span>THU</span>
-                      <span>FRI</span>
-                      <span>SAT</span>
-                      <span>SUN</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="text-sm text-zinc-500">Available to spend</div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-semibold">$1,000,000.00</span>
-                      <ChevronDown className="w-4 h-4 text-zinc-600" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Table */}
-                <div className="rounded-2xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/50 border border-white/10 overflow-hidden">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-white/5">
-                        <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500">Group</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500">Spend Limits</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b border-white/5">
-                        <td className="px-6 py-4 text-sm">Affiliate Platform</td>
-                        <td className="px-6 py-4 text-sm">$800,000.00</td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                            Active
-                          </span>
-                        </td>
-                      </tr>
-                      <tr className="border-b border-white/5">
-                        <td className="px-6 py-4 text-sm">Marketing</td>
-                        <td className="px-6 py-4 text-sm">$300,000.00</td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                            Active
-                          </span>
-                        </td>
-                      </tr>
-                      <tr className="border-b border-white/5">
-                        <td className="px-6 py-4 text-sm">Office Supplies</td>
-                        <td className="px-6 py-4 text-sm">No Limit</td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-zinc-800 text-zinc-500 text-xs">
-                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
-                            Paused
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 text-sm">Team Expenses</td>
-                        <td className="px-6 py-4 text-sm">No Limit</td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-zinc-800 text-zinc-500 text-xs">
-                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
-                            Paused
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Right Sidebar */}
-              <div className="border-l border-white/5 bg-black/20 p-6">
-                <div className="text-sm font-medium mb-4">Transactions</div>
-                <div className="space-y-4">
-                  {[
-                    { name: "Amazon Associates", amount: "-$7,890.21", type: "Card Transaction", category: "Affiliate" },
-                    { name: "Etsy Partner Network", amount: "$34,993.71", type: "Inbound ACH Credit", category: "" },
-                    { name: "Meta Platforms Inc.", amount: "-$12,287.83", type: "Card Transaction", category: "Facebook Ads" },
-                    { name: "Adobe Inc.", amount: "-$2,056.87", type: "Card Transaction", category: "Design Assets" },
-                    { name: "Stripe Affiliate Program", amount: "$6,435.54", type: "Inbound ACH Credit", category: "ACH" },
-                  ].map((tx, i) => (
-                    <div key={i} className="flex items-start gap-3 pb-4 border-b border-white/5 last:border-0">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-bold text-white">
-                          {tx.name.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium truncate">{tx.name}</div>
-                        <div className="text-xs text-zinc-500">{tx.type}</div>
-                        {tx.category && (
-                          <div className="mt-1">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400">
-                              {tx.category}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className={`text-sm font-semibold ${tx.amount.startsWith('-') ? 'text-red-400' : 'text-amber-400'}`}>
-                        {tx.amount}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* Zero Infrastructure */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 p-8 hover:border-white/20 transition-all"
+          >
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 mb-6">
+              <Shield className="w-6 h-6 text-emerald-400" />
             </div>
+            <h3 className="text-xl font-semibold mb-3">100% Private</h3>
+            <p className="text-zinc-400 leading-relaxed">
+              Everything runs in your browser. Your logs never leave your machine.
+            </p>
+          </motion.div>
+
+          {/* Real-time Streaming */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 p-8 hover:border-white/20 transition-all"
+          >
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 mb-6">
+              <Zap className="w-6 h-6 text-blue-400" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">Lightning Fast</h3>
+            <p className="text-zinc-400 leading-relaxed">
+              Handle 100K+ logs with smooth performance. Sub-millisecond search.
+            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-24 px-6">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-8">
-            <input
-              type="email"
-              placeholder="What's your email?"
-              className="w-full max-w-md px-6 py-4 rounded-full bg-zinc-900 border border-white/10 text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/20"
-            />
+      {/* AI Intelligence Section - Slash Two-Column Style */}
+      <section className="relative py-32 px-6 border-t border-white/5">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/5 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-8">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AI Engine 2.0
+                </div>
+                <h2 className="text-5xl md:text-6xl font-serif leading-tight mb-6">
+                  AI-assisted
+                  <br />
+                  <em className="italic">troubleshooting</em>
+                </h2>
+                <p className="text-xl text-zinc-400 leading-relaxed mb-8">
+                  Delegate root cause analysis to autonomous agents trained on trillions of log patterns.
+                </p>
+                <Button className="h-12 px-8 bg-white text-black hover:bg-zinc-200 rounded-full font-medium">
+                  Experience Logic
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </motion.div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute inset-0 bg-amber-500/5 blur-3xl rounded-full" />
+              <div className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 p-8">
+                <div className="space-y-4">
+                  {[
+                    { name: "Pattern Analyzer", active: true, icon: Terminal },
+                    { name: "Error Classifier", active: false, icon: Shield },
+                    { name: "Anomaly Detector", active: false, icon: Sparkles },
+                  ].map((agent, i) => (
+                    <div
+                      key={agent.name}
+                      className={`flex items-center justify-between rounded-2xl p-5 transition-all ${agent.active
+                        ? "bg-white/5 border border-white/10"
+                        : "bg-transparent border border-transparent hover:bg-white/[0.02]"
+                        }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`flex items-center justify-center w-12 h-12 rounded-xl ${agent.active ? "bg-white text-black" : "bg-zinc-900/50 text-zinc-500"
+                            }`}
+                        >
+                          <agent.icon className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <div className={`font-semibold ${agent.active ? "text-white" : "text-zinc-500"}`}>
+                            {agent.name}
+                          </div>
+                          <div className="text-xs text-zinc-600 uppercase tracking-wider">AI Agent</div>
+                        </div>
+                      </div>
+                      {agent.active && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-amber-500 uppercase tracking-wider">Active</span>
+                          <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
-          <Button className="h-12 px-8 bg-white text-black hover:bg-zinc-200 rounded-full font-medium">
-            Get Started
-          </Button>
+        </div>
+      </section>
+
+      {/* Pricing Section - Slash Style */}
+      <section id="pricing" className="relative py-32 px-6 border-t border-white/5">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-7xl font-serif mb-6">
+              Build first,
+              <br />
+              <em className="italic">pay later</em>
+            </h2>
+            <p className="text-xl text-zinc-400">Simple pricing for teams of all sizes.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Free Tier */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-950/50 p-12"
+            >
+              <div className="mb-12">
+                <div className="text-sm text-zinc-500 uppercase tracking-wider mb-4">Standard Edition</div>
+                <h3 className="text-3xl font-serif italic mb-4">Individual</h3>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-6xl font-bold">$0</span>
+                  <span className="text-zinc-500">Forever</span>
+                </div>
+              </div>
+              <ul className="space-y-4 mb-12">
+                {[
+                  "Unlimited log uploads",
+                  "AI pattern detection",
+                  "7-day retention",
+                  "Browser-based processing"
+                ].map(feature => (
+                  <li key={feature} className="flex items-center gap-3 text-zinc-400">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/dashboard">
+                <Button className="w-full h-12 bg-zinc-900 hover:bg-white hover:text-black border border-white/10 rounded-full font-medium transition-all">
+                  Start Building Free
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Pro Tier */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="rounded-3xl border border-amber-500/30 bg-gradient-to-b from-amber-500/5 to-zinc-950/50 p-12 relative"
+            >
+              <div className="absolute top-8 right-8">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+                  Waitlist
+                </span>
+              </div>
+              <div className="mb-12">
+                <div className="text-sm text-amber-500/60 uppercase tracking-wider mb-4">Professional Tier</div>
+                <h3 className="text-3xl font-serif italic mb-4">Enterprise</h3>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-6xl font-bold">$49</span>
+                  <span className="text-zinc-500">/month</span>
+                </div>
+              </div>
+              <ul className="space-y-4 mb-12">
+                {[
+                  "Everything in Individual",
+                  "Advanced AI agents",
+                  "Unlimited retention",
+                  "Priority support"
+                ].map(feature => (
+                  <li key={feature} className="flex items-center gap-3 text-zinc-300">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Button disabled className="w-full h-12 bg-amber-500 text-white rounded-full font-medium opacity-40">
+                Coming Soon
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA - Slash Style */}
+      <section className="relative py-32 px-6 border-t border-white/5">
+        <div className="mx-auto max-w-4xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-6xl md:text-8xl font-serif mb-8">
+              Ready to <em className="italic">accelerate</em>?
+            </h2>
+            <p className="text-xl text-zinc-400 mb-12 max-w-2xl mx-auto">
+              Join innovative engineering teams and redefine how you debug production software.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/dashboard">
+                <Button className="h-14 px-10 bg-white text-black hover:bg-zinc-200 rounded-full text-lg font-medium">
+                  Get Started Now
+                </Button>
+              </Link>
+              <Link href="https://github.com/loglens">
+                <Button variant="outline" className="h-14 px-10 border-white/10 hover:bg-white/5 rounded-full text-lg font-medium">
+                  View Repository
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
