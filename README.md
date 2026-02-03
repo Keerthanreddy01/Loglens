@@ -1,30 +1,86 @@
-# Build LogLens platform
+# LogLens 🚀
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+**Enterprise-grade log analytics and visualization platform.**
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/keerthanreddy1706-7261s-projects/v0-build-log-lens-platform)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/kejRddHEsdv)
+LogLens transforms raw logs into actionable insights using modern web technologies and a high-performance architecture. Built with Next.js, TypeScript, and WorkOS AuthKit.
 
-## Overview
+## 📋 Table of Contents
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Quick Start](#-quick-start)
+- [Documentation](#-documentation)
+- [Development Workflow](#-development-workflow)
+- [Security](#-security)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+## ✨ Features
+- ⚡ **Real-time Log Frequency Analysis** - Visualize log volume trends instantly.
+- 🤖 **AI-Powered Insights** - Integrated overview cards with smart log interpretation.
+- 🔒 **Enterprise Authentication** - Secure login powered by WorkOS AuthKit.
+- 🎨 **Premium Modern UI** - Sleek, dark-themed dashboard with smooth Framer Motion animations.
+- 📈 **Interactive Dashboards** - Rich data visualizations using Recharts.
 
-## Deployment
+## 🏗️ Project Structure
+```bash
+loglens/
+├── frontend/          # Next.js frontend application (App Router)
+├── backend/           # Node.js/Express backend API (Internal/Future)
+├── shared/            # Shared TypeScript types and utilities
+├── docs/              # Structured project documentation
+└── scripts/           # Build and security automation scripts
+```
 
-Your project is live at:
+## 🚀 Quick Start
+### Prerequisites
+- Node.js >= 20.x
+- npm or pnpm
+- [WorkOS Environment Keys](https://workos.com/)
 
-**[https://vercel.com/keerthanreddy1706-7261s-projects/v0-build-log-lens-platform](https://vercel.com/keerthanreddy1706-7261s-projects/v0-build-log-lens-platform)**
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/Keerthanreddy01/Loglens.git
+cd Loglens
 
-## Build your app
+# Install dependencies
+npm install
 
-Continue building your app on:
+# Setup environment variables
+cp .env.example .env.local
 
-**[https://v0.app/chat/kejRddHEsdv](https://v0.app/chat/kejRddHEsdv)**
+# Run development server
+npm run dev
+```
 
-## How It Works
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## 📚 Documentation
+- [Architecture Overview](./docs/architecture/landing-page-ui.md)
+- [Authentication Workflow](./docs/guides/auth-testing.md)
+- [Refactoring Roadmap](./docs/guides/roadmap.md)
+- [Development Quickstart](./docs/guides/quickstart.md)
+
+## 🛠️ Development Workflow
+We follow the **Standard Feature Flow**:
+1. Branch from `develop`.
+2. Implement feature in `frontend/src/features/`.
+3. Verify with local testing.
+4. Merge to `develop` and eventually `main`.
+
+## 🛡️ Security
+Security is our priority. We use:
+- **Environment Isolation**: Secrets are never committed to Git.
+- **Pre-push Hooks**: Automated scans for secrets and linting.
+- **CSRF & CSP**: Industry-standard protection headers.
+
+## 🤝 Contributing
+Please read our [Contributing Guidelines](./CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+<div align="center">
+  Made with ❤️ by the LogLens Team
+</div>
