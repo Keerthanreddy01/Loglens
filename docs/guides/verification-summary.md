@@ -38,7 +38,7 @@
 ## 📊 Configuration Confirmed
 
 **Environment Variables**:
-- ✅ WORKOS_CLIENT_ID: `client_01KGFTVSCCX1WADN02DFD829JV`
+- ✅ WORKOS_CLIENT_ID: `<WORKOS_CLIENT_ID>`
 - ✅ WORKOS_API_KEY: Configured correctly
 - ✅ WORKOS_REDIRECT_URI: `http://localhost:3000/api/auth/callback`
 - ✅ WORKOS_COOKIE_PASSWORD: Set (32 characters)

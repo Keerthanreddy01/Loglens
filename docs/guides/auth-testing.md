@@ -189,7 +189,7 @@
 ## 📝 Notes
 
 ### WorkOS Configuration Verified
-- ✅ Client ID: `client_01KGFTVSCCX1WADN02DFD829JV`
+- ✅ Client ID: `<WORKOS_CLIENT_ID>`
 - ✅ Redirect URI: `http://localhost:3000/api/auth/callback`
 - ✅ Sign-in endpoint: `http://localhost:3000/api/auth/login`
 - ✅ Email + Password authentication: Enabled
