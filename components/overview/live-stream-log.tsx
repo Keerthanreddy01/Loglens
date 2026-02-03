@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useLogStore } from "@/lib/store";
 import { highlightLogMessage } from "@/lib/log-parser";
 import type { ParsedLog, LogLevel } from "@/lib/types";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Search,
   X,
@@ -564,39 +565,54 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
         onScroll={handleScroll}
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        {logs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center p-6">
-            <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-              <SearchX className="w-7 h-7 text-muted-foreground" />
-            </div>
-            <h3 className="text-base font-semibold text-foreground mb-1.5">No logs match filters</h3>
-            <p className="text-xs text-muted-foreground mb-4 max-w-xs">
-              Try adjusting your search or level filters
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearAllFilters}
-              className="gap-1.5 h-8 text-xs bg-transparent"
+        <AnimatePresence mode="popLayout" initial={false}>
+          {logs.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="flex flex-col items-center justify-center h-full min-h-[200px] text-center p-6"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Clear Filters
-            </Button>
-          </div>
-        ) : (
-          <div className="divide-y divide-border/30">
-            {logs.map((log, index) => (
-              <LogEntry
-                key={log.id}
-                log={log}
-                isSelected={selectedLogId === log.id}
-                onSelect={() => selectLog(log.id)}
-                viewMode={viewMode}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
+              <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                <SearchX className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <h3 className="text-base font-semibold text-foreground mb-1.5">No logs match filters</h3>
+              <p className="text-xs text-muted-foreground mb-4 max-w-xs">
+                Try adjusting your search or level filters
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearAllFilters}
+                className="gap-1.5 h-8 text-xs bg-transparent"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Clear Filters
+              </Button>
+            </motion.div>
+          ) : (
+            <div className="divide-y divide-border/30">
+              {logs.map((log, index) => (
+                <motion.div
+                  key={log.id}
+                  layout="position"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2, delay: Math.min(index * 0.01, 0.2) }}
+                >
+                  <LogEntry
+                    log={log}
+                    isSelected={selectedLogId === log.id}
+                    onSelect={() => selectLog(log.id)}
+                    viewMode={viewMode}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Floating Scroll Buttons */}

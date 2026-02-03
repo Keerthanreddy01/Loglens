@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronUp, ChevronDown, Maximize2, Minimize2, GripHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { motion, AnimatePresence } from "motion/react";
+
 type PanelMode = "split" | "logs-expanded" | "chart-expanded";
 
 export function OverviewContent() {
@@ -71,15 +73,16 @@ export function OverviewContent() {
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background">
       {/* Log Frequency Chart Section */}
-      <div
+      <motion.div
+        animate={{
+          height: isLogsExpanded ? 0 : isChartExpanded ? "100%" : chartHeight,
+          opacity: isLogsExpanded ? 0 : 1,
+        }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "border-b border-border shrink-0 transition-all duration-300 ease-out overflow-hidden",
-          isLogsExpanded && "h-0 border-b-0",
+          "border-b border-border shrink-0 overflow-hidden",
           isChartExpanded && "flex-1"
         )}
-        style={{
-          height: isLogsExpanded ? 0 : isChartExpanded ? undefined : chartHeight,
-        }}
       >
         <div className="p-4 h-full flex flex-col">
           <div className="flex items-start justify-between mb-3 shrink-0">
@@ -110,20 +113,25 @@ export function OverviewContent() {
             <LogFrequencyChart />
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Resizer Handle */}
-      {panelMode === "split" && (
-        <div
-          className={cn(
-            "h-2 bg-border/50 hover:bg-primary/30 cursor-ns-resize flex items-center justify-center transition-colors shrink-0 group",
-            isDragging && "bg-primary/50"
-          )}
-          onMouseDown={handleDragStart}
-        >
-          <GripHorizontal className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        </div>
-      )}
+      <AnimatePresence>
+        {panelMode === "split" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={cn(
+              "h-2 bg-border/50 hover:bg-primary/30 cursor-ns-resize flex items-center justify-center transition-colors shrink-0 group",
+              isDragging && "bg-primary/50"
+            )}
+            onMouseDown={handleDragStart}
+          >
+            <GripHorizontal className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Panel Mode Controls */}
       <div className="flex items-center justify-between px-4 py-1.5 bg-muted/30 border-b border-border shrink-0">
@@ -153,14 +161,17 @@ export function OverviewContent() {
       </div>
 
       {/* Live Stream Section */}
-      <div
-        className={cn(
-          "flex-1 min-h-0 overflow-hidden transition-all duration-300 ease-out",
-          isChartExpanded && "h-0"
-        )}
+      <motion.div
+        animate={{
+          flex: isChartExpanded ? 0 : 1,
+          height: isChartExpanded ? 0 : "auto",
+          opacity: isChartExpanded ? 0 : 1,
+        }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="min-h-0 overflow-hidden"
       >
         <LiveStreamLog logs={filteredLogs} />
-      </div>
+      </motion.div>
     </div>
   );
 }

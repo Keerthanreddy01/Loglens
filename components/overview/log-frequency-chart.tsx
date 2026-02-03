@@ -119,7 +119,7 @@ export function LogFrequencyChart() {
 
   const handleChartClick = useCallback(
     (chartData: { activePayload?: Array<{ payload: { errors: number } }> }) => {
-      if (chartData?.activePayload?.[0]?.payload?.errors > 0) {
+      if ((chartData?.activePayload?.[0]?.payload?.errors ?? 0) > 0) {
         setLevelFilter(["ERROR"]);
       }
     },

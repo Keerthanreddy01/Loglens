@@ -3,6 +3,7 @@
 import { Sparkles } from "lucide-react";
 import { useLogStore } from "@/lib/store";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "motion/react";
 
 export function AIInsightCard() {
   const { insights, stats, patterns } = useLogStore();
@@ -14,8 +15,17 @@ export function AIInsightCard() {
   // Fallback content if no insights
   if (!primaryInsight && stats.totalLogs === 0) {
     return (
-      <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card">
-        <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card shadow-sm"
+      >
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+        </motion.div>
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             AI Insight
@@ -24,7 +34,7 @@ export function AIInsightCard() {
             Load some logs to get AI-powered insights and recommendations.
           </p>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -62,39 +72,62 @@ export function AIInsightCard() {
   }
 
   return (
-    <div className="flex items-start gap-3 p-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm bg-gradient-to-br from-primary/5 to-transparent shadow-sm">
-      <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+    <motion.div
+      initial={{ opacity: 0, y: -10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-card/80 backdrop-blur-sm bg-gradient-to-br from-primary/10 to-transparent shadow-md hover:border-primary/40 transition-colors"
+    >
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.8, 1, 0.8]
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+      </motion.div>
       <div className="space-y-1 min-w-0">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+        <p className="text-xs font-bold text-primary/80 uppercase tracking-[0.1em]">
           AI Insight
         </p>
-        <p className="text-sm text-foreground">
+        <p className="text-sm text-foreground leading-relaxed">
           {description}
           {title && (
             <>
               {" "}
-              <span className="font-semibold">{title}</span>
+              <span className="font-bold text-foreground">{title}</span>
             </>
           )}
           {linkText && (
             <>
               {" "}
               originating from{" "}
-              <span className="text-primary font-medium">{linkText}</span>.
+              <span className="text-primary font-bold underline decoration-primary/20 text-glow">{linkText}</span>.
             </>
           )}
         </p>
-        {recommendation && (
-          <p className="text-sm text-muted-foreground">
-            Recommendation: {recommendation}
-          </p>
-        )}
-        {topPattern && (topPattern.confidenceScore ?? 0) > 0 && (
-          <Badge variant="outline" className="mt-2 text-[10px] font-normal">
-            Confidence: {(topPattern.confidenceScore ?? 0)}%
-          </Badge>
-        )}
+        <motion.div
+          initial={{ opacity: 0, x: -5 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          {recommendation && (
+            <p className="text-[13px] text-muted-foreground italic">
+              Recommendation: {recommendation}
+            </p>
+          )}
+          {topPattern && (topPattern.confidenceScore ?? 0) > 0 && (
+            <Badge variant="outline" className="mt-2 text-[10px] font-black uppercase tracking-tighter border-primary/30 text-primary/80">
+              Confidence: {(topPattern.confidenceScore ?? 0)}%
+            </Badge>
+          )}
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

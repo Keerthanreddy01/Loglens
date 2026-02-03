@@ -9,18 +9,21 @@ import { RightPanel } from './right-panel'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 
+import { User } from '@workos-inc/node';
+
 interface AppShellProps {
-  children: React.ReactNode
+  children: React.ReactNode;
+  user?: User;
 }
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, user }: AppShellProps) {
   const { comparisonLogs, clearComparison, parsedLogs, stats } = useLogStore()
   const mainErrorCount = parsedLogs.filter(l => l.level === 'ERROR').length
   const compareErrorCount = comparisonLogs.filter(l => l.level === 'ERROR').length
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      <TopNav />
+      <TopNav user={user} />
       {comparisonLogs.length > 0 && (
         <div className="shrink-0 px-4 py-2 bg-primary/10 border-b border-primary/20 flex items-center justify-between">
           <span className="text-sm">

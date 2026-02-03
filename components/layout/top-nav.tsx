@@ -32,11 +32,10 @@ import { useLogStore } from "@/lib/store";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/auth-provider";
+import { User } from "@workos-inc/node";
 
-export function TopNav() {
+export function TopNav({ user }: { user?: User }) {
   const { loadLogs, loadSampleLogs, clearLogs, updateFilter, parsedLogs, stats, saveSession, savedSessions, loadSession, deleteSession, getFilteredLogs, loadLogsForComparison, comparisonLogs, clearComparison } = useLogStore();
-  const { user, signOut } = useAuth();
   const router = useRouter();
 
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
@@ -205,10 +204,9 @@ export function TopNav() {
     toast.success("Shareable link copied to clipboard");
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success("Logged out successfully");
-    router.push("/login");
+  const handleSignOut = () => {
+    toast.success("Logging out...");
+    window.location.href = "/api/auth/logout";
   };
 
   const userInitial = user?.email?.[0].toUpperCase() ?? "U";
