@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   },
 }
 
-import { AuthProvider } from '@/components/auth-provider'
 import { ThemeProvider } from '@/components/theme-provider'
+import { SmoothScroll } from '@/components/ui/smooth-scroll'
 
 export default function RootLayout({
   children,
@@ -41,18 +41,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans antialiased`}>
+      <body className={`font-sans antialiased overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
+          <SmoothScroll>
             {children}
             <Toaster position="bottom-right" theme="dark" />
             <Analytics />
-          </AuthProvider>
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>
