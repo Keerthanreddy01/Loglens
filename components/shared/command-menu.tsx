@@ -9,7 +9,7 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-} from "@/components/ui/command";
+} from "../ui/command";
 import {
     Activity,
     LayoutDashboard,
@@ -20,7 +20,7 @@ import {
     Download,
     Eye
 } from "lucide-react";
-import { useLogStore } from "@/store/useLogsStore";
+import { useLogStore } from "../../store/useLogsStore";
 import { toast } from "sonner";
 
 export function CommandMenu() {

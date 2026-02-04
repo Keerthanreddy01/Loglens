@@ -30,8 +30,8 @@ export const metadata: Metadata = {
   },
 }
 
-import { ThemeProvider } from '@/components/shared/theme-provider'
-import { SmoothScroll } from '@/components/ui/smooth-scroll'
+import { ThemeProvider } from '../components/shared/theme-provider'
+import { SmoothScroll } from '../components/ui/smooth-scroll'
 
 export default function RootLayout({
   children,

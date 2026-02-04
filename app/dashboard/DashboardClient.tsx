@@ -1,12 +1,12 @@
 'use client'
 
-import { AppShell } from '@/components/layouts/app-shell'
-import { OverviewContent } from '@/components/logs/overview-content'
-import { AnalyticsContent } from '@/components/charts/analytics-content'
-import { LiveStreamContent } from '@/components/logs/live-stream-content'
-import { AlertsContent } from '@/components/logs/alerts-content'
-import { useLogStore } from '@/store/useLogsStore'
-import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
+import { AppShell } from '../../components/layouts/app-shell'
+import { OverviewContent } from '../../components/logs/overview-content'
+import { AnalyticsContent } from '../../components/charts/analytics-content'
+import { LiveStreamContent } from '../../components/logs/live-stream-content'
+import { AlertsContent } from '../../components/logs/alerts-content'
+import { useLogStore } from '../../store/useLogsStore'
+import { useKeyboardShortcuts } from '../../hooks/use-keyboard-shortcuts'
 
 function MainContent() {
   const { activeTab, getFilteredLogs } = useLogStore()
