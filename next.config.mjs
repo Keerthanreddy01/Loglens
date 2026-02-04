@@ -96,17 +96,12 @@ const nextConfig = {
   experimental: {
     // Enable optimizations
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'motion'],
-    // Optimize CSS
-    optimizeCss: true,
   },
 
-  // Turbopack configuration (Next.js 16+)
-  turbopack: {},
-
   // Production optimizations
-  productionBrowserSourceMaps: false, // Disable source maps in production for security
-  poweredByHeader: false, // Remove X-Powered-By header
-  compress: true, // Enable gzip compression
+  productionBrowserSourceMaps: false,
+  poweredByHeader: false,
+  compress: true,
 }
 
 export default nextConfig
