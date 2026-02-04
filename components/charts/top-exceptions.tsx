@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 
 export function TopExceptions() {
   const { patterns, parsedLogs, updateFilter, setActiveTab } = useLogStore();

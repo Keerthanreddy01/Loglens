@@ -47,39 +47,6 @@
             ],
             "@/hooks/*": [
                 "./hooks/*"
-            ],
-            "@/ui/*": [
-                "./components/ui/*"
-            ],
-            "@/shared/*": [
-                "./components/shared/*"
-            ],
-            "@/layouts/*": [
-                "./components/layouts/*"
-            ],
-            "@/lib/store": [
-                "./store/useLogsStore"
-            ],
-            "@/lib/types": [
-                "./types/log"
-            ],
-            "@/lib/env": [
-                "./lib/validators"
-            ],
-            "@/features/dashboard/*": [
-                "./components/logs/*"
-            ],
-            "@/features/analytics/*": [
-                "./components/charts/*"
-            ],
-            "@/features/logs/*": [
-                "./components/logs/*"
-            ],
-            "@/features/auth/*": [
-                "./components/auth/*"
-            ],
-            "@/features/landing/*": [
-                "./components/landing/*"
             ]
         }
     },

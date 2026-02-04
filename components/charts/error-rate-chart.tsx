@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 import { generateTimelineData } from "@/lib/log-parser";
 
 export function ErrorRateChart() {

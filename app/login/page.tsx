@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 

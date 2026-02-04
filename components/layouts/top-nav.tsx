@@ -3,9 +3,9 @@
 import React from "react"
 import { useRef, useState, useEffect } from "react";
 import { Search, Bell, Settings, ChevronRight, Upload, Trash2, Keyboard, FileUp, ClipboardPaste, Database, Save, FileDown, Share2, GitCompare, LogOut, User as UserIcon, CheckCircle2, ArrowRight } from "lucide-react";
-import { Input } from "@/ui/input";
-import { Button } from "@/ui/button";
-import { Avatar, AvatarFallback } from "@/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,8 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "@/ui/dialog";
-import { Textarea } from "@/ui/textarea";
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,13 +22,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuShortcut,
-} from "@/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/ui/popover";
-import { useLogStore } from "@/lib/store";
+} from "@/components/ui/popover";
+import { useLogStore } from "@/store/useLogsStore";
 import { DashboardSettings } from "@/components/shared/dashboard-settings";
 import { toast } from "sonner";
 import Link from "next/link";

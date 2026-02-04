@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useCallback, RefObject } from "react";
-import { useLogStore } from "@/lib/store";
-import type { ParsedLog } from "@/lib/types";
+import { useLogStore } from "@/store/useLogsStore";
+import type { ParsedLog } from "@/types/log";
 
 interface UseKeyboardShortcutsProps {
   searchInputRef?: RefObject<HTMLInputElement>;

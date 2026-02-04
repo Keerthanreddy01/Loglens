@@ -1,9 +1,9 @@
 "use client";
 
 import { X, Copy, ExternalLink, Clock, Link2, ChevronLeft, ChevronRight, Bookmark, BookmarkPlus, Sparkles, Database } from "lucide-react";
-import { Button } from "@/ui/button";
-import { Badge } from "@/ui/badge";
-import { useLogStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useLogStore } from "@/store/useLogsStore";
 import { getRelatedLogs } from "@/lib/log-parser";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";

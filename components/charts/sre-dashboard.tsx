@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useLogStore } from "@/lib/store";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
+import { useLogStore } from "@/store/useLogsStore";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Cpu, Database, Globe } from "lucide-react";
 import {
     LineChart,

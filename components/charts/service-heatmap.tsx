@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Settings, Download } from "lucide-react";
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 

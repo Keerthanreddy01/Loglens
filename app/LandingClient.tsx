@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import { ArrowRight, Zap, Shield, CheckCircle2, TrendingUp, Activity, Bell, BarChart3, Database, Check } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { User } from '@workos-inc/node'

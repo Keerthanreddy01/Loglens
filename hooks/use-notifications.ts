@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 import { toast } from "sonner";
 import { audioSystem } from "@/lib/audio";
 

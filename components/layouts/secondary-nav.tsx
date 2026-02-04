@@ -1,8 +1,8 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { useLogStore } from '@/lib/store'
-import { Badge } from '@/ui/badge'
+import { useLogStore } from '@/store/useLogsStore'
+import { Badge } from '@/components/ui/badge'
 import { NotificationSettings } from '@/components/shared/notification-settings'
 import { motion } from 'motion/react'
 

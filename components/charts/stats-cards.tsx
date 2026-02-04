@@ -3,7 +3,7 @@
 import React from "react";
 import { AlertCircle, Clock, Server, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 
 interface StatCardProps {
   label: string;

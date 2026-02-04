@@ -1,6 +1,6 @@
 "use client";
 
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 import {
     BellRing,
     ShieldAlert,
@@ -8,14 +8,14 @@ import {
     Info,
     Check
 } from "lucide-react";
-import { Switch } from "@/ui/switch";
-import { Label } from "@/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/ui/popover";
-import { Button } from "@/ui/button";
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function NotificationSettings() {

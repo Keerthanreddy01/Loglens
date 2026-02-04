@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useLogStore } from "@/lib/store";
-import { Button } from "@/ui/button";
+import { useLogStore } from "@/store/useLogsStore";
+import { Button } from "@/components/ui/button";
 import {
   Filter,
   AlertCircle,

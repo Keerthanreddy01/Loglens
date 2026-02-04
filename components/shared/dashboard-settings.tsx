@@ -1,6 +1,6 @@
 "use client";
 
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 import {
     Settings,
     Sparkles,
@@ -11,14 +11,14 @@ import {
     BellRing,
     Check
 } from "lucide-react";
-import { Button } from "@/ui/button";
-import { Switch } from "@/ui/switch";
-import { Label } from "@/ui/label";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/ui/popover";
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { audioSystem } from "@/lib/audio";
 
