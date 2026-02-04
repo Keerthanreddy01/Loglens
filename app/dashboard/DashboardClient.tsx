@@ -1,11 +1,11 @@
 'use client'
 
-import { AppShell } from '@/layouts/app-shell'
-import { OverviewContent } from '@/features/dashboard/overview-content'
-import { AnalyticsContent } from '@/features/analytics/analytics-content'
-import { LiveStreamContent } from '@/features/dashboard/live-stream-content'
-import { AlertsContent } from '@/features/dashboard/alerts-content'
-import { useLogStore } from '@/lib/store'
+import { AppShell } from '@/components/layouts/app-shell'
+import { OverviewContent } from '@/components/logs/overview-content'
+import { AnalyticsContent } from '@/components/charts/analytics-content'
+import { LiveStreamContent } from '@/components/logs/live-stream-content'
+import { AlertsContent } from '@/components/logs/alerts-content'
+import { useLogStore } from '@/store/useLogsStore'
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
 
 function MainContent() {

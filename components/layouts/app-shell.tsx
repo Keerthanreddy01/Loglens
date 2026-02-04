@@ -1,13 +1,13 @@
 'use client'
 
 import React from "react"
-import { useLogStore } from '@/lib/store'
+import { useLogStore } from '@/store/useLogsStore'
 import { TopNav } from './top-nav'
 import { LeftSidebar } from './left-sidebar'
 import { RightPanel } from './right-panel'
 import { SecondaryNav } from './secondary-nav'
-import { CommandMenu } from '@/shared/command-menu'
-import { Button } from '@/ui/button'
+import { CommandMenu } from '@/components/shared/command-menu'
+import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import { motion } from 'motion/react'
 import { User } from '@workos-inc/node'

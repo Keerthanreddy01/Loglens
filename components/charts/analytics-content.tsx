@@ -1,12 +1,12 @@
 "use client";
 
-import { useLogStore } from "@/lib/store";
+import { useLogStore } from "@/store/useLogsStore";
 import { StatsCards } from "./stats-cards";
 import { ServiceHeatmap } from "./service-heatmap";
 import { ErrorRateChart } from "./error-rate-chart";
 import { TopExceptions } from "./top-exceptions";
 import { SreDashboard } from "./sre-dashboard";
-import { EmptyState } from "@/features/dashboard/empty-state";
+import { EmptyState } from "@/components/logs/empty-state";
 
 export function AnalyticsContent() {
   const { parsedLogs, stats } = useLogStore();
