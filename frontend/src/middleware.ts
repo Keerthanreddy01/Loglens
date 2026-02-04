@@ -11,7 +11,7 @@ export default authkitMiddleware({
             '/api/auth/logout',
         ],
     },
-    redirectUri: 'http://localhost:3000/api/auth/callback',
+    redirectUri: process.env.WORKOS_REDIRECT_URI,
 });
 
 export const config = {

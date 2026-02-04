@@ -1,0 +1,32 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Staging
+        # This is a placeholder for actual deployment logic (e.g., Vercel, AWS, etc.)
+        run: echo "Deploying to staging..."
+
+      - name: Smoke Test Staging
+        run: |
+          # Add smoke test command here
+          echo "Running smoke tests..."
+
+      - name: Canary Deployment to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Starting canary rollout to production..."
+          # Implement canary logic here (e.g., traffic shifting)
+
+      - name: Health Check & Rollback
+        run: |
+          echo "Monitoring health checks..."
+          # If health check fails within 2 mins, trigger rollback
+          # exit 1 if health check fails

@@ -1,16 +1,12 @@
 "use client";
 
-import React from "react"
-
-import { useState, useRef, useEffect, useCallback, memo } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { useLogStore } from "@/lib/store";
 import { highlightLogMessage } from "@/lib/log-parser";
 import type { ParsedLog, LogLevel } from "@/lib/types";
-import { motion, AnimatePresence } from "motion/react";
 import {
   Search,
   X,
@@ -34,6 +30,8 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 import { toast } from "sonner";
+
+import { VirtualizedLogStream } from "./virtualized-log-stream";
 
 const levelStyles: Record<LogLevel, { badge: string; bg: string; text: string; border: string }> = {
   ERROR: {
@@ -67,94 +65,6 @@ const levelStyles: Record<LogLevel, { badge: string; bg: string; text: string; b
     border: "border-l-muted"
   },
 };
-
-interface LogEntryProps {
-  log: ParsedLog;
-  isSelected: boolean;
-  onSelect: () => void;
-  viewMode: "compact" | "comfortable";
-  index: number;
-}
-
-const LogEntry = memo(function LogEntry({ log, isSelected, onSelect, viewMode, index }: LogEntryProps) {
-  const styles = levelStyles[log.level];
-  const dateObj = log.timestamp instanceof Date ? log.timestamp : new Date(log.timestamp);
-  const timestamp = dateObj.toLocaleTimeString("en-US", {
-    hour12: false,
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-
-  const highlightedMessage = highlightLogMessage(log.message);
-
-  const handleDoubleClick = useCallback(() => {
-    navigator.clipboard.writeText(log.rawLine);
-    toast.success("Log copied to clipboard");
-  }, [log.rawLine]);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onSelect();
-    }
-  }, [onSelect]);
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={onSelect}
-      onDoubleClick={handleDoubleClick}
-      onKeyDown={handleKeyDown}
-      data-index={index}
-      data-level={log.level}
-      className={cn(
-        "w-full text-left border-l-[3px] transition-all duration-75 log-entry outline-none",
-        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset",
-        viewMode === "compact" ? "px-3 py-1.5" : "px-4 py-2.5",
-        isSelected
-          ? "bg-primary/10 border-l-primary"
-          : cn(styles.bg, styles.border, "border-l-transparent hover:border-l-current"),
-      )}
-      style={{ contain: "layout style paint" }}
-    >
-      <div className="flex items-start gap-2 sm:gap-3">
-        <span className="text-[11px] font-mono text-muted-foreground whitespace-nowrap tabular-nums shrink-0">
-          {timestamp}
-        </span>
-        <span className="text-[11px] font-mono text-primary whitespace-nowrap shrink-0 hidden sm:inline">
-          [{log.service}]
-        </span>
-        <Badge
-          className={cn(
-            "text-[10px] font-semibold px-1.5 py-0 h-[18px] shrink-0 rounded",
-            styles.badge
-          )}
-        >
-          {log.level}
-        </Badge>
-        <span className="text-[12px] sm:text-[13px] text-foreground flex-1 break-words font-mono leading-relaxed min-w-0">
-          {highlightedMessage.map((part, i) => (
-            <span
-              key={i}
-              className={cn(
-                part.type === "ip" && "text-cyan-400",
-                part.type === "url" && "text-purple-400 underline underline-offset-2",
-                part.type === "uuid" && "text-emerald-400",
-                part.type === "status" && "text-destructive font-semibold"
-              )}
-            >
-              {part.text}
-            </span>
-          ))}
-        </span>
-      </div>
-    </div>
-  );
-});
 
 interface LiveStreamLogProps {
   logs: ParsedLog[];
@@ -559,60 +469,35 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
       </div>
 
       {/* Log Entries */}
-      <div
-        ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain touch-pan-y custom-scrollbar"
-        onScroll={handleScroll}
-        style={{ WebkitOverflowScrolling: "touch" }}
-      >
-        <AnimatePresence mode="popLayout" initial={false}>
-          {logs.length === 0 ? (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="flex flex-col items-center justify-center h-full min-h-[200px] text-center p-6"
-            >
-              <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                <SearchX className="w-7 h-7 text-muted-foreground" />
-              </div>
-              <h3 className="text-base font-semibold text-foreground mb-1.5">No logs match filters</h3>
-              <p className="text-xs text-muted-foreground mb-4 max-w-xs">
-                Try adjusting your search or level filters
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clearAllFilters}
-                className="gap-1.5 h-8 text-xs bg-transparent"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Clear Filters
-              </Button>
-            </motion.div>
-          ) : (
-            <div className="divide-y divide-border/30">
-              {logs.map((log, index) => (
-                <motion.div
-                  key={log.id}
-                  layout="position"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: Math.min(index * 0.01, 0.2) }}
-                >
-                  <LogEntry
-                    log={log}
-                    isSelected={selectedLogId === log.id}
-                    onSelect={() => selectLog(log.id)}
-                    viewMode={viewMode}
-                    index={index}
-                  />
-                </motion.div>
-              ))}
+      <div className="flex-1 overflow-hidden relative">
+        {logs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center p-6">
+            <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+              <SearchX className="w-7 h-7 text-muted-foreground" />
             </div>
-          )}
-        </AnimatePresence>
+            <h3 className="text-base font-semibold text-foreground mb-1.5">No logs match filters</h3>
+            <p className="text-xs text-muted-foreground mb-4 max-w-xs">
+              Try adjusting your search or level filters
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearAllFilters}
+              className="gap-1.5 h-8 text-xs bg-transparent"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              Clear Filters
+            </Button>
+          </div>
+        ) : (
+          <VirtualizedLogStream
+            logs={logs}
+            selectedLogId={selectedLogId}
+            selectLog={selectLog}
+            viewMode={viewMode}
+            isLiveTailEnabled={isLiveTailEnabled}
+          />
+        )}
       </div>
 
       {/* Floating Scroll Buttons */}

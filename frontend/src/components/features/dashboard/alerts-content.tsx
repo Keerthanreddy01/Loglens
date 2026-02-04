@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Bell, AlertTriangle, CheckCircle2, Clock, Plus, Settings, X, VolumeX, Volume2, Trash2, Sparkles } from 'lucide-react'
+import { Bell, AlertTriangle, CheckCircle2, Clock, Plus, Settings, VolumeX, Volume2, Trash2, Sparkles } from 'lucide-react'
 import { Button } from '@/ui/button'
 import { Badge } from '@/ui/badge'
 import { Input } from '@/ui/input'
@@ -157,7 +157,6 @@ export function AlertsContent() {
     updateAlertRule,
     removeAlertRule,
     patterns,
-    setActiveTab,
     createAlertFromPattern,
   } = useLogStore()
 

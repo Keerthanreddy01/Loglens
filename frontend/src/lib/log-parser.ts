@@ -70,22 +70,22 @@ function extractRequestId(line: string): string | undefined {
 
 function extractMetadata(line: string): Record<string, string> {
   const metadata: Record<string, string> = {}
-  
+
   const ipMatch = line.match(IP_PATTERN)
   if (ipMatch) metadata.ip = ipMatch[1]
-  
+
   const urlMatch = line.match(URL_PATTERN)
   if (urlMatch) metadata.url = urlMatch[0]
-  
+
   const uuidMatch = line.match(UUID_PATTERN)
   if (uuidMatch) metadata.uuid = uuidMatch[0]
-  
+
   const statusMatch = line.match(STATUS_CODE_PATTERN)
   if (statusMatch) metadata.statusCode = statusMatch[1]
-  
+
   const durationMatch = line.match(DURATION_PATTERN)
   if (durationMatch) metadata.duration = `${durationMatch[1]}ms`
-  
+
   return metadata
 }
 
@@ -99,7 +99,7 @@ function extractMessage(line: string): string {
   message = message.replace(LEVEL_PATTERN, '').trim()
   // Remove service tag
   message = message.replace(SERVICE_PATTERN, '').trim()
-  
+
   return message || line
 }
 
@@ -117,7 +117,7 @@ export function parseLogLine(line: string, index: number): ParsedLog {
       metadata: {},
     }
   }
-  
+
   return {
     id: `log-${index}`,
     lineNumber: index + 1,
@@ -149,21 +149,21 @@ export function filterLogs(
     if (levels.length > 0 && !levels.includes(log.level)) {
       return false
     }
-    
+
     // Service filter
     if (services.length > 0 && !services.includes(log.service)) {
       return false
     }
-    
+
     // Search filter
     if (search) {
-      const searchTarget = caseSensitive 
-        ? log.rawLine 
+      const searchTarget = caseSensitive
+        ? log.rawLine
         : log.rawLine.toLowerCase()
-      const searchQuery = caseSensitive 
-        ? search 
+      const searchQuery = caseSensitive
+        ? search
         : search.toLowerCase()
-      
+
       if (useRegex) {
         try {
           const regex = new RegExp(search, caseSensitive ? '' : 'i')
@@ -172,24 +172,24 @@ export function filterLogs(
           return false
         }
       }
-      
+
       return searchTarget.includes(searchQuery)
     }
-    
+
     return true
   })
 }
 
 export function generateTimelineData(logs: ParsedLog[]): TimelineDataPoint[] {
   const hourlyBuckets: Map<string, { total: number; errors: number; warnings: number; info: number }> = new Map()
-  
+
   for (const log of logs) {
     // Handle both Date objects and serialized date strings from localStorage
     const timestamp = log.timestamp instanceof Date ? log.timestamp : new Date(log.timestamp)
     const hour = new Date(timestamp)
     hour.setMinutes(0, 0, 0)
     const key = hour.toISOString()
-    
+
     const bucket = hourlyBuckets.get(key) || { total: 0, errors: 0, warnings: 0, info: 0 }
     bucket.total++
     if (log.level === 'ERROR') bucket.errors++
@@ -197,7 +197,7 @@ export function generateTimelineData(logs: ParsedLog[]): TimelineDataPoint[] {
     else bucket.info++
     hourlyBuckets.set(key, bucket)
   }
-  
+
   return Array.from(hourlyBuckets.entries())
     .map(([time, data]) => ({
       time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -307,9 +307,8 @@ export function detectPatterns(logs: ParsedLog[]): LogPattern[] {
 export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AIInsight[] {
   const insights: AIInsight[] = []
   const errorCount = logs.filter(l => l.level === 'ERROR').length
-  const warnCount = logs.filter(l => l.level === 'WARN').length
   const totalCount = logs.length
-  
+
   // Error rate insight
   if (totalCount > 0) {
     const errorRate = (errorCount / totalCount) * 100
@@ -324,7 +323,7 @@ export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AII
       })
     }
   }
-  
+
   // Pattern-based insights
   if (patterns.length > 0) {
     const topPattern = patterns[0]
@@ -332,7 +331,7 @@ export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AII
       // Detect pattern type
       let recommendation = 'Review the error logs for more details.'
       const patternLower = topPattern.pattern.toLowerCase()
-      
+
       if (patternLower.includes('timeout') || patternLower.includes('etimedout')) {
         recommendation = 'Check network connectivity and increase timeout limits if needed.'
       } else if (patternLower.includes('connection') || patternLower.includes('redis')) {
@@ -344,7 +343,7 @@ export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AII
       } else if (patternLower.includes('database') || patternLower.includes('query')) {
         recommendation = 'Check database connection and query performance.'
       }
-      
+
       insights.push({
         type: 'pattern',
         title: `${topPattern.count} similar errors detected`,
@@ -355,13 +354,13 @@ export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AII
       })
     }
   }
-  
+
   // Service-based insights
   const serviceErrors: Map<string, number> = new Map()
   for (const log of logs.filter(l => l.level === 'ERROR')) {
     serviceErrors.set(log.service, (serviceErrors.get(log.service) || 0) + 1)
   }
-  
+
   const sortedServices = Array.from(serviceErrors.entries()).sort((a, b) => b[1] - a[1])
   if (sortedServices.length > 0 && sortedServices[0][1] >= 5) {
     const [service, count] = sortedServices[0]
@@ -374,7 +373,7 @@ export function generateInsights(logs: ParsedLog[], patterns: LogPattern[]): AII
       recommendation: `Focus debugging efforts on the ${service} service.`,
     })
   }
-  
+
   return insights
 }
 
@@ -390,17 +389,17 @@ export function getRelatedLogs(logs: ParsedLog[], requestId?: string): ParsedLog
 export function highlightLogMessage(message: string): { text: string; type: 'normal' | 'ip' | 'url' | 'uuid' | 'status' }[] {
   const parts: { text: string; type: 'normal' | 'ip' | 'url' | 'uuid' | 'status' }[] = []
   let remaining = message
-  
+
   const patterns: { regex: RegExp; type: 'ip' | 'url' | 'uuid' | 'status' }[] = [
     { regex: /https?:\/\/[^\s]+/, type: 'url' },
     { regex: /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i, type: 'uuid' },
     { regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/, type: 'ip' },
     { regex: /\b[45]\d{2}\b/, type: 'status' },
   ]
-  
+
   while (remaining) {
     let earliestMatch: { index: number; length: number; type: 'ip' | 'url' | 'uuid' | 'status' } | null = null
-    
+
     for (const { regex, type } of patterns) {
       const match = remaining.match(regex)
       if (match && match.index !== undefined) {
@@ -409,14 +408,14 @@ export function highlightLogMessage(message: string): { text: string; type: 'nor
         }
       }
     }
-    
+
     if (earliestMatch) {
       if (earliestMatch.index > 0) {
         parts.push({ text: remaining.substring(0, earliestMatch.index), type: 'normal' })
       }
-      parts.push({ 
-        text: remaining.substring(earliestMatch.index, earliestMatch.index + earliestMatch.length), 
-        type: earliestMatch.type 
+      parts.push({
+        text: remaining.substring(earliestMatch.index, earliestMatch.index + earliestMatch.length),
+        type: earliestMatch.type
       })
       remaining = remaining.substring(earliestMatch.index + earliestMatch.length)
     } else {
@@ -424,7 +423,7 @@ export function highlightLogMessage(message: string): { text: string; type: 'nor
       break
     }
   }
-  
+
   return parts
 }
 
@@ -434,7 +433,7 @@ export function calculateStats(logs: ParsedLog[]) {
   const errorCount = logs.filter(l => l.level === 'ERROR').length
   const warnCount = logs.filter(l => l.level === 'WARN').length
   const errorRate = totalLogs > 0 ? (errorCount / totalLogs) * 100 : 0
-  
+
   // Calculate average response time from logs with duration metadata
   const durationsMs: number[] = []
   for (const log of logs) {
@@ -443,12 +442,12 @@ export function calculateStats(logs: ParsedLog[]) {
       if (!Number.isNaN(ms)) durationsMs.push(ms)
     }
   }
-  const avgResponseTime = durationsMs.length > 0 
-    ? durationsMs.reduce((a, b) => a + b, 0) / durationsMs.length 
+  const avgResponseTime = durationsMs.length > 0
+    ? durationsMs.reduce((a, b) => a + b, 0) / durationsMs.length
     : 0
-  
+
   const services = getUniqueServices(logs)
-  
+
   return {
     totalLogs,
     errorCount,

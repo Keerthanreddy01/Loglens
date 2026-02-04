@@ -1,21 +1,26 @@
 "use client";
 
-import React from "react"
-
+import React from "react";
 import { useState, useRef } from "react";
 import { useLogStore } from "@/lib/store";
-import { Card } from "@/ui/card";
-import { Button } from "@/ui/button";
+import {
+  ClipboardPaste,
+  FileUp,
+  Sparkles,
+  Terminal,
+  ArrowRight
+} from "lucide-react";
+import { toast } from "sonner";
+import { motion } from "motion/react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from "@/ui/dialog";
+import { Button } from "@/ui/button";
 import { Textarea } from "@/ui/textarea";
-import { CloudUpload, ClipboardPaste, FileText, Sparkles } from "lucide-react";
-import { toast } from "sonner";
 
 export function EmptyState() {
   const { loadLogs, loadSampleLogs } = useLogStore();
@@ -32,7 +37,7 @@ export function EmptyState() {
       const content = e.target?.result as string;
       if (content) {
         loadLogs(content);
-        toast.success(`Loaded ${content.split("\n").length} log lines from ${file.name}`);
+        toast.success(`Loaded logs from ${file.name}`);
       }
     };
     reader.onerror = () => {
@@ -44,121 +49,169 @@ export function EmptyState() {
   const handlePaste = () => {
     if (pasteContent.trim()) {
       loadLogs(pasteContent);
-      toast.success(`Loaded ${pasteContent.split("\n").filter(l => l.trim()).length} log lines`);
+      toast.success("Logs imported successfully");
       setIsPasteModalOpen(false);
       setPasteContent("");
     }
   };
 
-  const handleLoadSample = () => {
-    loadSampleLogs();
-    toast.success("Loaded sample logs for demonstration");
-  };
-
   return (
-    <div className="flex h-full items-center justify-center p-8">
-      <div className="max-w-2xl w-full text-center">
-        {/* Icon */}
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-          <CloudUpload className="h-10 w-10 text-muted-foreground" />
-        </div>
+    <div className="flex h-full w-full flex-col bg-[#050507] overflow-y-auto relative">
+      <div className="noise-overlay" />
 
-        {/* Title and Description */}
-        <h2 className="mb-2 text-2xl font-semibold text-foreground">
-          Start analyzing your logs
-        </h2>
-        <p className="mb-8 text-muted-foreground">
-          Import your logs to get started with pattern detection, error analysis, and real-time insights.
-        </p>
+      {/* Subtle Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[30%] h-[30%] bg-primary/5 blur-[100px] rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-[30%] h-[30%] bg-purple-500/3 blur-[100px] rounded-full" />
+      </div>
 
-        {/* Action Cards */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Card
-            className="cursor-pointer p-6 transition-all hover:border-primary hover:bg-muted/50 interactive-element"
+      <div className="flex-1 w-full max-w-5xl mx-auto px-8 py-12 relative z-10">
+        {/* Compact Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center text-center mb-10"
+        >
+          <div className="relative mb-6">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0A0A0F] border border-white/[0.08] shadow-xl">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#050507] border border-white/10">
+              <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+            </div>
+          </div>
+
+          <h1 className="text-3xl font-bold text-white mb-2 leading-tight">
+            No logs yet
+          </h1>
+
+          <p className="text-sm text-zinc-500 max-w-md">
+            Import logs to start analyzing your infrastructure
+          </p>
+        </motion.div>
+
+        {/* Action Cards - Horizontal Layout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+        >
+          {/* Paste Logs */}
+          <button
             onClick={() => setIsPasteModalOpen(true)}
+            className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300"
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <ClipboardPaste className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] group-hover:bg-white/[0.08] transition-colors">
+                <ClipboardPaste className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="font-medium text-foreground">Paste Logs</h3>
-                <p className="text-xs text-muted-foreground">
-                  Paste log content directly
-                </p>
+                <div className="text-sm font-semibold text-white mb-1">Paste Logs</div>
+                <div className="text-xs text-zinc-500">Copy & paste log data</div>
               </div>
             </div>
-          </Card>
+          </button>
 
-          <Card
-            className="cursor-pointer p-6 transition-all hover:border-primary hover:bg-muted/50 interactive-element"
+          {/* Upload File */}
+          <button
             onClick={() => fileInputRef.current?.click()}
+            className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300"
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <FileText className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] group-hover:bg-white/[0.08] transition-colors">
+                <FileUp className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="font-medium text-foreground">Upload File</h3>
-                <p className="text-xs text-muted-foreground">
-                  .log, .txt files supported
-                </p>
+                <div className="text-sm font-semibold text-white mb-1">Upload File</div>
+                <div className="text-xs text-zinc-500">JSON, text, or log files</div>
               </div>
             </div>
             <input
               ref={fileInputRef}
               type="file"
               accept=".log,.txt,.json"
-              className="hidden"
               onChange={handleFileUpload}
+              className="hidden"
             />
-          </Card>
+          </button>
 
-          <Card
-            className="cursor-pointer p-6 transition-all hover:border-primary hover:bg-muted/50 interactive-element"
-            onClick={handleLoadSample}
+          {/* Load Sample */}
+          <button
+            onClick={() => {
+              loadSampleLogs();
+              toast.success("Sample logs loaded");
+            }}
+            className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300"
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <Sparkles className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] group-hover:bg-white/[0.08] transition-colors">
+                <Terminal className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="font-medium text-foreground">Load Sample</h3>
-                <p className="text-xs text-muted-foreground">
-                  Try with example logs
-                </p>
+                <div className="text-sm font-semibold text-white mb-1">Load Sample</div>
+                <div className="text-xs text-zinc-500">Try with demo data</div>
               </div>
             </div>
-          </Card>
-        </div>
+          </button>
+        </motion.div>
 
-        {/* Paste Modal */}
-        <Dialog open={isPasteModalOpen} onOpenChange={setIsPasteModalOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Paste Your Logs</DialogTitle>
-            </DialogHeader>
+        {/* Quick Info */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex items-center justify-center gap-6 text-xs text-zinc-600"
+        >
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-emerald-400" />
+            <span>Real-time analysis</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-blue-400" />
+            <span>AI-powered insights</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-purple-400" />
+            <span>Instant alerts</span>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Paste Modal */}
+      <Dialog open={isPasteModalOpen} onOpenChange={setIsPasteModalOpen}>
+        <DialogContent className="bg-[#0A0A0F] border-white/[0.08] text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Paste Log Data</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
             <Textarea
-              placeholder="Paste your log content here...
-Example:
-2024-02-01T10:15:23.456Z INFO [server] Application started
-2024-02-01T10:15:24.123Z ERROR [api] Connection failed"
-              className="min-h-[300px] font-mono text-sm"
               value={pasteContent}
               onChange={(e) => setPasteContent(e.target.value)}
+              placeholder="Paste your log data here (JSON, plain text, or structured logs)..."
+              className="min-h-[300px] bg-black/40 border-white/[0.08] text-white placeholder:text-zinc-600 font-mono text-sm"
             />
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsPasteModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handlePaste} disabled={!pasteContent.trim()}>
-                Parse Logs
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setIsPasteModalOpen(false)}
+              className="text-zinc-400 hover:text-white"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePaste}
+              disabled={!pasteContent.trim()}
+              className="bg-white text-black hover:bg-zinc-100"
+            >
+              Import Logs
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

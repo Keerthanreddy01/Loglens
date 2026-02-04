@@ -5,6 +5,7 @@ import { StatsCards } from "./stats-cards";
 import { ServiceHeatmap } from "./service-heatmap";
 import { ErrorRateChart } from "./error-rate-chart";
 import { TopExceptions } from "./top-exceptions";
+import { SreDashboard } from "./sre-dashboard";
 import { EmptyState } from "@/features/dashboard/empty-state";
 
 export function AnalyticsContent() {
@@ -17,6 +18,9 @@ export function AnalyticsContent() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
+        {/* SRE Infrastructure Health */}
+        <SreDashboard />
+
         {/* Stats Cards Row */}
         <StatsCards />
 

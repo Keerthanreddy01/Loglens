@@ -102,7 +102,6 @@ export function LiveStreamContent() {
     selectedLogId,
     selectLog,
     isLiveTailEnabled,
-    setLiveTail,
     getFilteredLogs,
     setLevelFilter,
     appendStreamingLogs,
@@ -251,7 +250,7 @@ export function LiveStreamContent() {
           );
           filename += ".json";
           break;
-        case "csv":
+        case "csv": {
           const headers = "Timestamp,Level,Service,Message,Request ID\n";
           const rows = filteredLogs
             .map((l) => {
@@ -262,6 +261,7 @@ export function LiveStreamContent() {
           content = headers + rows;
           filename += ".csv";
           break;
+        }
         case "clipboard":
           content = filteredLogs.map((l) => l.rawLine).join("\n");
           navigator.clipboard.writeText(content);

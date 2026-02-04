@@ -184,7 +184,7 @@ export default function StatusPage() {
                 <section className="border-t border-white/5 pt-16">
                     <h2 className="text-2xl font-medium text-zinc-300 mb-6">Report an Issue</h2>
                     <p className="text-zinc-400 leading-relaxed mb-4">
-                        If you're experiencing issues not reflected on this page, please contact our support team:
+                        If you&apos;re experiencing issues not reflected on this page, please contact our support team:
                     </p>
                     <p className="text-zinc-300">
                         Email: support@loglens.io<br />

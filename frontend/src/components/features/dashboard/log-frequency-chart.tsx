@@ -127,10 +127,10 @@ export function LogFrequencyChart() {
   );
 
   const chartColors = {
-    stroke: "#0070f3",
-    fill: "rgba(0, 112, 243, 0.15)",
+    stroke: "#3b82f6",
+    fill: "rgba(59, 130, 246, 0.1)",
     errorStroke: "#ef4444",
-    grid: "#262626",
+    grid: "#1f1f1f",
   };
 
   const errorSpikes = data.filter((point) => point.errors > 0);
@@ -218,7 +218,7 @@ export function LogFrequencyChart() {
               strokeDasharray="3 3"
               stroke={chartColors.grid}
               vertical={false}
-              opacity={0.5}
+              opacity={0.15}
             />
             <XAxis
               dataKey="time"
@@ -271,19 +271,12 @@ export function LogFrequencyChart() {
                 key={`error-${index}`}
                 x={point.time}
                 y={point.total}
-                r={6}
+                r={3}
                 fill="#ef4444"
                 stroke="#000"
-                strokeWidth={2}
-                className="cursor-pointer"
-              >
-                <animate
-                  attributeName="r"
-                  values="6;8;6"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              </ReferenceDot>
+                strokeWidth={1}
+                className="cursor-pointer drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+              />
             ))}
           </ComposedChart>
         </ResponsiveContainer>

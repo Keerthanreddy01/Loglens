@@ -1,12 +1,13 @@
 "use client";
 
-import { X, Copy, ExternalLink, Clock, Link2, ChevronLeft, ChevronRight, Bookmark, BookmarkPlus } from "lucide-react";
+import { X, Copy, ExternalLink, Clock, Link2, ChevronLeft, ChevronRight, Bookmark, BookmarkPlus, Sparkles, Database } from "lucide-react";
 import { Button } from "@/ui/button";
 import { Badge } from "@/ui/badge";
 import { useLogStore } from "@/lib/store";
 import { getRelatedLogs } from "@/lib/log-parser";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "motion/react";
 
 function MetadataRow({
   label,
@@ -25,13 +26,13 @@ function MetadataRow({
   };
 
   return (
-    <div className="flex justify-between items-center py-2 gap-2">
-      <span className="text-xs text-muted-foreground font-mono shrink-0">{label}:</span>
+    <div className="flex justify-between items-center py-2.5 gap-2 group">
+      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider shrink-0">{label}</span>
       <div className="flex items-center gap-2 min-w-0">
         <span
           className={cn(
-            "text-xs font-mono truncate",
-            highlight ? "text-primary" : "text-foreground"
+            "text-xs font-mono truncate transition-colors",
+            highlight ? "text-primary font-bold" : "text-zinc-300"
           )}
           title={value}
         >
@@ -40,7 +41,7 @@ function MetadataRow({
         {copyable && (
           <button
             onClick={handleCopy}
-            className="text-muted-foreground hover:text-foreground shrink-0 p-1 rounded hover:bg-secondary interactive-element"
+            className="text-zinc-600 hover:text-white shrink-0 p-1 rounded transition-colors opacity-0 group-hover:opacity-100"
           >
             <Copy className="w-3 h-3" />
           </button>
@@ -79,36 +80,42 @@ export function RightPanel() {
     return (
       <button
         onClick={toggleDetailsPanel}
-        className="w-10 border-l border-border bg-card flex items-center justify-center hover:bg-secondary transition-colors shrink-0 interactive-element"
+        className="w-12 border-l border-white/[0.04] bg-[#0A0A0F]/60 backdrop-blur-xl flex flex-col items-center py-8 gap-6 hover:bg-white/[0.02] transition-all shrink-0 relative z-20 group"
         aria-label="Show details panel"
       >
-        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
+        <ChevronLeft className="w-4 h-4 text-zinc-600 group-hover:text-white transition-colors" />
+        <div className="[writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-600 group-hover:text-zinc-400 rotate-180">
+          Context Inspector
+        </div>
       </button>
     );
   }
 
   if (!selectedLog) {
     return (
-      <aside className="w-[320px] border-l border-border bg-card flex flex-col shrink-0">
-        <div className="p-4 border-b border-border flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-              Log Context
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Select a log to view details
-            </p>
-          </div>
-          <Button variant="ghost" size="icon" onClick={toggleDetailsPanel} className="interactive-element">
+      <aside className="w-[380px] border-l border-white/[0.05] bg-transparent flex flex-col shrink-0 relative z-20">
+        <div className="noise-overlay opacity-[0.02]" />
+        <div className="p-6 flex items-center justify-between border-b border-white/[0.05]">
+          <h2 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
+            Context Inspector
+          </h2>
+          <Button variant="ghost" size="icon" onClick={toggleDetailsPanel} className="h-8 w-8 text-zinc-500 hover:text-white rounded-full">
             <X className="w-4 h-4" />
           </Button>
         </div>
-        <div className="flex-1 flex items-center justify-center p-8 text-center">
-          <div>
-            <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
-              <Bookmark className="w-8 h-8 text-muted-foreground" />
+        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center relative z-10">
+          <div className="w-16 h-16 rounded-[24px] bg-white/[0.02] border border-white/[0.05] flex items-center justify-center mb-8 relative">
+            <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-full" />
+            <Sparkles className="w-8 h-8 text-zinc-700 relative z-10" />
+          </div>
+          <h3 className="text-lg font-bold text-white mb-3">No entry selected</h3>
+          <p className="text-sm text-zinc-500 leading-relaxed max-w-[200px] mx-auto">
+            Select an event from the stream to analyze its full lifecycle and metadata.
+          </p>
+          <div className="mt-12 flex flex-col gap-3">
+            <div className="px-4 py-2 rounded-full bg-white/[0.02] border border-white/[0.04] text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
+              Shortcuts: <span className="text-zinc-400 font-mono">J / K</span> to Navigate
             </div>
-            <p className="text-sm text-muted-foreground">Click on a log entry to view its details and metadata</p>
           </div>
         </div>
       </aside>
@@ -116,16 +123,16 @@ export function RightPanel() {
   }
 
   const levelColors: Record<string, string> = {
-    ERROR: "bg-destructive text-white",
-    WARN: "bg-warning text-black",
-    INFO: "bg-primary text-white",
-    DEBUG: "bg-muted-foreground text-white",
-    TRACE: "bg-muted text-foreground",
+    ERROR: "bg-destructive/10 text-destructive border-destructive/20",
+    WARN: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    INFO: "bg-primary/10 text-primary border-primary/20",
+    DEBUG: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
+    TRACE: "bg-zinc-800/10 text-zinc-500 border-zinc-800/20",
   };
 
   const handleCopyLog = () => {
     navigator.clipboard.writeText(selectedLog.rawLine);
-    toast.success("Log copied to clipboard");
+    toast.success("Raw entry copied");
   };
 
   const handleInspectJSON = () => {
@@ -144,7 +151,7 @@ export function RightPanel() {
       2
     );
     navigator.clipboard.writeText(json);
-    toast.success("Full JSON copied to clipboard");
+    toast.success("Full JSON payload copied");
   };
 
   const handleSaveAsQuery = () => {
@@ -159,196 +166,179 @@ export function RightPanel() {
       },
       icon: 'star',
     });
-    toast.success(`Saved query: ${queryName}`);
+    toast.success(`Perspective saved: ${queryName}`);
   };
 
   return (
-    <aside className="w-[320px] border-l border-border bg-card flex flex-col overflow-hidden shrink-0">
+    <aside className="w-[380px] border-l border-white/[0.05] bg-transparent flex flex-col overflow-hidden shrink-0 relative z-20">
+      <div className="noise-overlay opacity-[0.02]" />
+
       {/* Header */}
-      <div className="p-4 border-b border-border shrink-0">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-            Log Context
-          </h2>
-          <div className="flex items-center gap-1">
+      <div className="p-6 border-b border-white/[0.05] shrink-0 bg-[#0A0A0F]/20 backdrop-blur-md">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-primary ai-indicator-pulse" />
+            <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
+              Inspector
+            </h2>
+          </div>
+          <div className="flex items-center gap-2 bg-white/[0.03] rounded-full p-1 border border-white/[0.05]">
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 interactive-element"
+              className="h-8 w-8 rounded-full hover:bg-white/5 text-zinc-500 hover:text-white transition-all"
               onClick={goToPrevious}
               disabled={selectedIndex <= 0}
-              title="Previous log (k)"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <span className="text-xs text-muted-foreground tabular-nums px-1">
-              {selectedIndex + 1}/{parsedLogs.length}
+            <span className="text-[11px] font-bold text-zinc-400 tabular-nums px-2">
+              {selectedIndex + 1}<span className="text-zinc-600 mx-1">/</span>{parsedLogs.length}
             </span>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 interactive-element"
+              className="h-8 w-8 rounded-full hover:bg-white/5 text-zinc-500 hover:text-white transition-all"
               onClick={goToNext}
               disabled={selectedIndex >= parsedLogs.length - 1}
-              title="Next log (j)"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 interactive-element" onClick={toggleDetailsPanel}>
+            <div className="w-px h-4 bg-white/10 mx-1" />
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-white/5 text-zinc-500 hover:text-white transition-all" onClick={toggleDetailsPanel}>
               <X className="w-4 h-4" />
             </Button>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Detailed properties for selected entry
-        </p>
+
+        <div className="flex items-center gap-3">
+          <Badge className={cn("px-3 py-1 text-[10px] font-bold tracking-widest border", levelColors[selectedLog.level])}>
+            {selectedLog.level}
+          </Badge>
+          <span className="text-xs font-bold text-white tracking-tight">
+            {selectedLog.service}
+          </span>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-5">
-        {/* Overview */}
-        <section>
-          <div className="flex items-center gap-3 mb-3">
-            <Badge className={cn("px-2 py-1 text-xs", levelColors[selectedLog.level])}>
-              {selectedLog.level}
-            </Badge>
-            <span className="text-sm text-primary font-mono">
-              [{selectedLog.service}]
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
-            {(selectedLog.timestamp instanceof Date ? selectedLog.timestamp : new Date(selectedLog.timestamp)).toLocaleString()}
-          </p>
-        </section>
-
-        {/* Metadata */}
-        <section>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Metadata
-          </h3>
-          <div className="bg-secondary/50 rounded-lg p-3 divide-y divide-border/50">
-            {selectedLog.requestId && (
-              <MetadataRow
-                label="Request ID"
-                value={selectedLog.requestId}
-                copyable
-              />
-            )}
-            <MetadataRow label="Service" value={selectedLog.service} highlight />
-            {selectedLog.metadata?.ip && (
-              <MetadataRow label="IP" value={selectedLog.metadata.ip} copyable />
-            )}
-            {selectedLog.metadata?.statusCode && (
-              <MetadataRow
-                label="Status"
-                value={selectedLog.metadata.statusCode}
-              />
-            )}
-            {selectedLog.metadata?.duration && (
-              <MetadataRow
-                label="Duration"
-                value={selectedLog.metadata.duration}
-              />
-            )}
-            {selectedLog.metadata?.url && (
-              <MetadataRow label="URL" value={selectedLog.metadata.url} copyable />
-            )}
-          </div>
-        </section>
-
-        {/* Message */}
-        <section>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Message
-          </h3>
-          <div className="bg-secondary/50 rounded-lg p-3 relative group">
-            <pre className="text-xs font-mono text-foreground whitespace-pre-wrap break-all leading-relaxed">
-              {selectedLog.message}
-            </pre>
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(selectedLog.message);
-                toast.success("Message copied");
-              }}
-              className="absolute top-2 right-2 p-1.5 rounded bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity interactive-element"
-            >
-              <Copy className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
-            </button>
-          </div>
-        </section>
-
-        {/* Related Logs */}
-        {relatedLogs.length > 0 && (
-          <section>
-            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Link2 className="w-3.5 h-3.5" />
-              Related Logs ({relatedLogs.length})
-            </h3>
-            <div className="space-y-2">
-              {relatedLogs.slice(0, 5).map((log) => (
-                <button
-                  key={log.id}
-                  onClick={() => selectLog(log.id)}
-                  className="w-full text-left bg-secondary/50 rounded-lg p-2.5 hover:bg-secondary transition-colors interactive-element"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge
-                      className={cn(
-                        "text-[10px] px-1 py-0",
-                        levelColors[log.level]
-                      )}
-                    >
-                      {log.level}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground tabular-nums">
-                      {(log.timestamp instanceof Date ? log.timestamp : new Date(log.timestamp)).toLocaleTimeString()}
-                    </span>
-                  </div>
-                  <p className="text-xs font-mono text-foreground truncate">
-                    {log.message}
-                  </p>
-                </button>
-              ))}
-              {relatedLogs.length > 5 && (
-                <p className="text-xs text-muted-foreground text-center py-1">
-                  +{relatedLogs.length - 5} more related logs
-                </p>
-              )}
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8 relative z-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedLogId}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            className="space-y-8"
+          >
+            {/* Timestamp Section */}
+            <div>
+              <div className="flex items-center gap-2 text-zinc-500 mb-4 transition-colors group">
+                <Clock className="w-3.5 h-3.5 group-hover:text-primary transition-colors" />
+                <span className="text-[11px] font-bold uppercase tracking-widest">Temporal Signature</span>
+              </div>
+              <p className="text-base font-medium text-white font-mono bg-white/[0.02] border border-white/[0.05] p-4 rounded-2xl">
+                {(selectedLog.timestamp instanceof Date ? selectedLog.timestamp : new Date(selectedLog.timestamp)).toLocaleString()}
+              </p>
             </div>
-          </section>
-        )}
 
-        {/* Quick Actions */}
-        <section>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Quick Actions
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="secondary" size="sm" onClick={handleCopyLog} className="text-xs h-8 interactive-element">
-              <Copy className="w-3.5 h-3.5 mr-1.5" />
-              Copy Log
-            </Button>
-            <Button variant="secondary" size="sm" onClick={handleSaveAsQuery} className="text-xs h-8 interactive-element">
-              <BookmarkPlus className="w-3.5 h-3.5 mr-1.5" />
-              Save Query
-            </Button>
-          </div>
-        </section>
+            {/* Message Block */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-zinc-500">
+                  <Bookmark className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest">Entry Data</span>
+                </div>
+                <button onClick={() => navigator.clipboard.writeText(selectedLog.message)} className="text-[10px] font-bold text-primary hover:text-white uppercase tracking-widest transition-colors">Copy</button>
+              </div>
+              <div className="dashboard-card p-5 border-white/[0.05] bg-black/40">
+                <pre className="text-[13px] font-mono text-zinc-300 whitespace-pre-wrap break-all leading-relaxed selection:bg-primary/30">
+                  {selectedLog.message}
+                </pre>
+              </div>
+            </div>
+
+            {/* Attribute Stack */}
+            <div>
+              <div className="flex items-center gap-2 text-zinc-500 mb-4">
+                <Database className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-bold uppercase tracking-widest">System Metadata</span>
+              </div>
+              <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4 divide-y divide-white/[0.04]">
+                {selectedLog.requestId && (
+                  <MetadataRow label="Trace ID" value={selectedLog.requestId} copyable />
+                )}
+                <MetadataRow label="Origin" value={selectedLog.service} highlight />
+                {selectedLog.metadata?.ip && (
+                  <MetadataRow label="Client IP" value={selectedLog.metadata.ip} copyable />
+                )}
+                {selectedLog.metadata?.statusCode && (
+                  <MetadataRow label="Status" value={selectedLog.metadata.statusCode} />
+                )}
+                {selectedLog.metadata?.duration && (
+                  <MetadataRow label="Runtime" value={selectedLog.metadata.duration} />
+                )}
+                {selectedLog.metadata?.url && (
+                  <MetadataRow label="Endpoint" value={selectedLog.metadata.url} copyable />
+                )}
+              </div>
+            </div>
+
+            {/* Related Events */}
+            {relatedLogs.length > 0 && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="flex items-center gap-2 text-zinc-500 mb-4">
+                  <Link2 className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest">Related Stream ({relatedLogs.length})</span>
+                </div>
+                <div className="space-y-3">
+                  {relatedLogs.slice(0, 4).map((log) => (
+                    <button
+                      key={log.id}
+                      onClick={() => selectLog(log.id)}
+                      className="dashboard-card w-full text-left p-4 p-4 border-white/[0.03] hover:border-primary/30 bg-white/[0.01] hover:bg-white/[0.03] group transition-all"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge className={cn("text-[8px] h-4 font-bold tracking-widest border-0 opacity-80", levelColors[log.level])}>
+                          {log.level}
+                        </Badge>
+                        <span className="text-[10px] text-zinc-600 font-bold font-mono">
+                          {(log.timestamp instanceof Date ? log.timestamp : new Date(log.timestamp)).toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <p className="text-xs font-mono text-zinc-500 group-hover:text-zinc-300 transition-colors truncate">
+                        {log.message}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Footer Action */}
-      <div className="p-4 border-t border-border shrink-0">
+      {/* Persistence Controls */}
+      <div className="p-6 border-t border-white/[0.05] shrink-0 bg-[#0A0A0F]/20 backdrop-blur-md space-y-3">
+        <div className="flex gap-3">
+          <Button variant="ghost" size="sm" onClick={handleSaveAsQuery} className="flex-1 h-10 rounded-xl bg-white/[0.03] hover:bg-white/5 border border-white/[0.05] text-[11px] font-bold uppercase tracking-widest">
+            <BookmarkPlus className="w-3.5 h-3.5 mr-2 text-zinc-500" />
+            Save Pivot
+          </Button>
+          <Button variant="ghost" size="sm" onClick={handleCopyLog} className="flex-1 h-10 rounded-xl bg-white/[0.03] hover:bg-white/5 border border-white/[0.05] text-[11px] font-bold uppercase tracking-widest">
+            <Copy className="w-3.5 h-3.5 mr-2 text-zinc-500" />
+            Raw Log
+          </Button>
+        </div>
         <Button
-          className="w-full gap-2 interactive-element"
-          variant="secondary"
+          className="w-full h-12 gap-2 bg-white text-black hover:bg-zinc-200 rounded-xl font-bold uppercase tracking-[0.15em] text-[11px] shadow-2xl transition-all active:scale-[0.98]"
           onClick={handleInspectJSON}
         >
           <ExternalLink className="w-4 h-4" />
-          Copy Full JSON
+          Export JSON Schema
         </Button>
       </div>
     </aside>
   );
 }
-

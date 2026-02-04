@@ -3,10 +3,12 @@
 import { cn } from '@/lib/utils'
 import { useLogStore } from '@/lib/store'
 import { Badge } from '@/ui/badge'
+import { NotificationSettings } from '@/components/shared/notification-settings'
+import { motion } from 'motion/react'
 
 const tabs = [
   { id: 'overview', label: 'Overview' },
-  { id: 'live-logs', label: 'Live Logs' },
+  { id: 'live-logs', label: 'Intelligence' },
   { id: 'analytics', label: 'Analytics' },
   { id: 'alerts', label: 'Alerts' },
 ] as const
@@ -16,66 +18,44 @@ export function SecondaryNav() {
   const activeAlertsCount = alertRules.filter(a => a.status === 'active').length || (stats.errorRate > 5 ? 1 : 0)
 
   return (
-    <div className="h-12 border-b border-border bg-background flex items-center px-4 gap-1 shrink-0">
-      {tabs.map((tab) => {
-        const isActive = activeTab === tab.id
-        const showBadge = tab.id === 'alerts' && activeAlertsCount > 0
-        const showLogCount = tab.id === 'live-logs' && parsedLogs.length > 0
+    <div className="flex items-center justify-center w-full absolute top-6 left-0 z-40 pointer-events-none">
+      <div className="flex items-center gap-1 px-1.5 py-1.5 bg-[#0A0A0F]/60 backdrop-blur-2xl border border-white/[0.08] rounded-full shadow-2xl pointer-events-auto">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id
+          const showBadge = tab.id === 'alerts' && activeAlertsCount > 0
+          const showLogCount = tab.id === 'live-logs' && parsedLogs.length > 0
 
-        return (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              'relative flex items-center gap-2 px-4 text-sm font-medium py-3 border-b-2 transition-all duration-150 -mb-[1px] interactive-element',
-              isActive
-                ? 'text-foreground border-primary'
-                : 'text-muted-foreground border-transparent hover:text-foreground hover:border-border'
-            )}
-          >
-            {tab.label}
-            {showBadge && (
-              <Badge
-                variant="destructive"
-                className="h-5 min-w-[20px] px-1.5 text-[10px] font-semibold animate-pulse"
-              >
-                {activeAlertsCount}
-              </Badge>
-            )}
-            {showLogCount && (
-              <span className="text-xs text-muted-foreground tabular-nums">
-                ({parsedLogs.length > 1000 ? `${(parsedLogs.length / 1000).toFixed(1)}K` : parsedLogs.length})
-              </span>
-            )}
-          </button>
-        )
-      })}
-
-      {/* Spacer */}
-      <div className="flex-1" />
-
-      {/* Quick status indicator */}
-      {parsedLogs.length > 0 && (
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
-            </span>
-            <span className="hidden sm:inline">Connected</span>
-          </span>
-          <span className="hidden md:flex items-center gap-1">
-            <span className="text-muted-foreground">Error rate:</span>
-            <span className={cn(
-              "font-medium tabular-nums",
-              stats.errorRate > 5 ? "text-destructive" : "text-success"
-            )}>
-              {stats.errorRate.toFixed(1)}%
-            </span>
-          </span>
-        </div>
-      )}
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                'relative flex items-center gap-2 px-5 h-9 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all duration-300 group',
+                isActive
+                  ? 'text-white bg-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]'
+                  : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
+              )}
+            >
+              {tab.label}
+              {showBadge && (
+                <span className="w-1.5 h-1.5 rounded-full bg-destructive ai-indicator-pulse" />
+              )}
+              {showLogCount && (
+                <span className="text-[10px] text-zinc-600 font-mono group-hover:text-zinc-400 transition-colors">
+                  {parsedLogs.length > 1000 ? `${(parsedLogs.length / 1000).toFixed(0)}K` : parsedLogs.length}
+                </span>
+              )}
+              {isActive && (
+                <motion.div
+                  layoutId="activeTabPill"
+                  className="absolute inset-0 border border-white/10 rounded-full pointer-events-none"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }
-

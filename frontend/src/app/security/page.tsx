@@ -29,7 +29,7 @@ export default function SecurityPage() {
                     <section id="overview">
                         <h2 className="text-2xl font-medium text-zinc-300 mb-6">Security Overview</h2>
                         <p className="mb-4">
-                            Security is fundamental to everything we do at LogLens. We understand that you're trusting us with your most sensitive operational data, and we take that responsibility seriously.
+                            Security is fundamental to everything we do at LogLens. We understand that you&apos;re trusting us with your most sensitive operational data, and we take that responsibility seriously.
                         </p>
                         <p>
                             Our security program is designed to protect your data through multiple layers of defense, continuous monitoring, and regular third-party audits.
@@ -221,4 +221,3 @@ export default function SecurityPage() {
         </div>
     );
 }
-

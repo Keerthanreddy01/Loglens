@@ -7,10 +7,10 @@ export default async function LandingPage() {
   try {
     const userInfo = await withAuth({});
     user = userInfo?.user || null;
-  } catch (error) {
+  } catch {
     // Ignore auth errors on landing page - user can still view it
     // Using warn to avoid triggering the Next.js dev error overlay for non-critical auth issues
-    console.warn('WorkOS Auth optional check failed:', error instanceof Error ? error.message : error);
+    // console.warn('WorkOS Auth optional check failed:', error instanceof Error ? error.message : error);
   }
 
   return <LandingClient user={user} />;

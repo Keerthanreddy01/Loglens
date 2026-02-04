@@ -11,12 +11,30 @@
         "dev": "npm run dev -w frontend",
         "build": "npm run build -w frontend",
         "lint": "npm run lint -w frontend",
+        "type-check": "npm run type-check -w frontend",
+        "test:unit": "npm run test:unit -w frontend",
+        "test:e2e": "npm run test:e2e -w frontend",
         "clean": "npm run clean -w frontend && rm -rf node_modules",
         "pre-push": "bash ./scripts/pre-push-check.sh",
         "setup:git": "git config user.name 'Keerthan Dev' && git config user.email '12345678+Keerthanreddy01@users.noreply.github.com'"
     },
     "devDependencies": {
-        "prettier": "^3.0.0",
-        "eslint": "^8.0.0"
+        "@typescript-eslint/eslint-plugin": "^8.54.0",
+        "@typescript-eslint/parser": "^8.54.0",
+        "eslint": "^9.39.2",
+        "eslint-config-next": "^15.5.11",
+        "eslint-config-prettier": "^10.1.8",
+        "husky": "^9.0.0",
+        "lint-staged": "^15.0.0",
+        "prettier": "^3.0.0"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,css,md}": [
+            "prettier --write"
+        ]
     }
 }

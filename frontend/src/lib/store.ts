@@ -3,19 +3,19 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { ParsedLog, LogFilter, LogLevel, SavedQuery, AIInsight, LogPattern, AlertRule, AnalysisSession } from './types'
-import { parseLogs, filterLogs, detectPatterns, generateInsights, calculateStats, getUniqueServices, SAMPLE_LOGS } from './log-parser'
+import { parseLogs, filterLogs, detectPatterns, generateInsights, calculateStats, SAMPLE_LOGS } from './log-parser'
 
 interface LogStore {
   // Raw input and parsed logs
   rawInput: string
   parsedLogs: ParsedLog[]
-  
+
   // Selection
   selectedLogId: string | null
-  
+
   // Filters
   filter: LogFilter
-  
+
   // Smart filters (checkboxes)
   smartFilters: {
     criticalOnly: boolean
@@ -23,14 +23,14 @@ interface LogStore {
     securityEvents: boolean
     userActions: boolean
   }
-  
+
   // Saved queries
   savedQueries: SavedQuery[]
-  
+
   // AI Insights and patterns
   insights: AIInsight[]
   patterns: LogPattern[]
-  
+
   // Stats
   stats: {
     totalLogs: number
@@ -41,7 +41,7 @@ interface LogStore {
     activeServices: number
     services: string[]
   }
-  
+
   // UI State
   isLiveTailEnabled: boolean
   isDetailsPanelOpen: boolean
@@ -49,6 +49,20 @@ interface LogStore {
   viewMode: 'compact' | 'comfortable'
   isPaused: boolean
   bufferedLogs: number
+  isAiInsightCollapsed: boolean
+  isFocusMode: boolean
+
+  // Settings
+  settings: {
+    showAiInsights: boolean
+    soundsEnabled: boolean
+    notifications: {
+      critical: boolean
+      warning: boolean
+      info: boolean
+    }
+    volume: 'low' | 'medium' | 'high'
+  }
 
   // Sessions & Alerts
   savedSessions: AnalysisSession[]
@@ -77,6 +91,9 @@ interface LogStore {
   setViewMode: (mode: 'compact' | 'comfortable') => void
   toggleLogExpanded: (id: string) => void
   setPaused: (paused: boolean) => void
+  toggleAiInsightCollapsed: () => void
+  setFocusMode: (enabled: boolean) => void
+  updateSettings: (settings: Partial<LogStore['settings']>) => void
 
   // Session actions
   saveSession: (name: string) => void
@@ -161,20 +178,32 @@ export const useLogStore = create<LogStore>()(
       viewMode: 'comfortable',
       isPaused: false,
       bufferedLogs: 0,
+      isAiInsightCollapsed: false,
+      isFocusMode: false,
+      settings: {
+        showAiInsights: true,
+        soundsEnabled: false,
+        notifications: {
+          critical: true,
+          warning: true,
+          info: false,
+        },
+        volume: 'medium',
+      },
       savedSessions: [],
       alertRules: [],
       comparisonLogs: [],
       isLoading: false,
 
       setRawInput: (input) => set({ rawInput: input }),
-      
+
       loadLogs: (input) => {
         const parsed = parseLogs(input)
         const patterns = detectPatterns(parsed)
         const insights = generateInsights(parsed, patterns)
         const stats = calculateStats(parsed)
-        
-        set({ 
+
+        set({
           rawInput: input,
           parsedLogs: parsed,
           patterns,
@@ -182,11 +211,11 @@ export const useLogStore = create<LogStore>()(
           stats,
         })
       },
-      
+
       loadSampleLogs: () => {
         get().loadLogs(SAMPLE_LOGS)
       },
-      
+
       clearLogs: () => {
         set({
           rawInput: '',
@@ -197,14 +226,14 @@ export const useLogStore = create<LogStore>()(
           selectedLogId: null,
         })
       },
-      
+
       selectLog: (id) => set({ selectedLogId: id, isDetailsPanelOpen: id !== null }),
-      
+
       updateFilter: (newFilter) =>
         set((state) => ({
           filter: { ...state.filter, ...newFilter },
         })),
-        
+
       toggleLevel: (level) =>
         set((state) => {
           const levels = state.filter.levels.includes(level)
@@ -212,12 +241,12 @@ export const useLogStore = create<LogStore>()(
             : [...state.filter.levels, level]
           return { filter: { ...state.filter, levels } }
         }),
-      
+
       setLevelFilter: (levels) =>
         set((state) => ({
           filter: { ...state.filter, levels },
         })),
-        
+
       toggleSmartFilter: (key) =>
         set((state) => ({
           smartFilters: {
@@ -225,34 +254,37 @@ export const useLogStore = create<LogStore>()(
             [key]: !state.smartFilters[key],
           },
         })),
-        
+
       addSavedQuery: (query) =>
         set((state) => ({
           savedQueries: [...state.savedQueries, query],
         })),
-        
+
       removeSavedQuery: (id) =>
         set((state) => ({
           savedQueries: state.savedQueries.filter((q) => q.id !== id),
         })),
-      
+
       applySavedQuery: (query) =>
         set({ filter: { ...query.filter } }),
-        
+
       setLiveTail: (enabled) => set({ isLiveTailEnabled: enabled }),
       toggleDetailsPanel: () =>
         set((state) => ({ isDetailsPanelOpen: !state.isDetailsPanelOpen })),
       setActiveTab: (tab) => set({ activeTab: tab }),
       setViewMode: (mode) => set({ viewMode: mode }),
-      
+
       toggleLogExpanded: (id) =>
         set((state) => ({
           parsedLogs: state.parsedLogs.map((log) =>
             log.id === id ? { ...log, isExpanded: !log.isExpanded } : log
           ),
         })),
-      
+
       setPaused: (paused) => set({ isPaused: paused }),
+      toggleAiInsightCollapsed: () => set((state) => ({ isAiInsightCollapsed: !state.isAiInsightCollapsed })),
+      setFocusMode: (enabled) => set({ isFocusMode: enabled }),
+      updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
 
       saveSession: (name) => {
         const state = get()
@@ -344,36 +376,36 @@ export const useLogStore = create<LogStore>()(
       getFilteredLogs: () => {
         const state = get()
         let logs = state.parsedLogs
-        
+
         // Apply smart filters first
         if (state.smartFilters.criticalOnly) {
           logs = logs.filter(l => l.level === 'ERROR' || l.rawLine.toLowerCase().includes('critical') || l.rawLine.toLowerCase().includes('fatal') || l.rawLine.includes('500'))
         }
         if (state.smartFilters.performanceIssues) {
-          logs = logs.filter(l => 
-            l.rawLine.toLowerCase().includes('slow') || 
-            l.rawLine.toLowerCase().includes('timeout') || 
+          logs = logs.filter(l =>
+            l.rawLine.toLowerCase().includes('slow') ||
+            l.rawLine.toLowerCase().includes('timeout') ||
             l.rawLine.toLowerCase().includes('latency') ||
             (l.metadata?.duration && parseFloat(l.metadata.duration) > 1000)
           )
         }
         if (state.smartFilters.securityEvents) {
-          logs = logs.filter(l => 
-            l.rawLine.toLowerCase().includes('auth') || 
-            l.rawLine.toLowerCase().includes('login') || 
+          logs = logs.filter(l =>
+            l.rawLine.toLowerCase().includes('auth') ||
+            l.rawLine.toLowerCase().includes('login') ||
             l.rawLine.toLowerCase().includes('unauthorized') ||
             l.rawLine.includes('403') ||
             l.rawLine.includes('401')
           )
         }
         if (state.smartFilters.userActions) {
-          logs = logs.filter(l => 
-            l.rawLine.toLowerCase().includes('user') || 
-            l.rawLine.toLowerCase().includes('session') || 
+          logs = logs.filter(l =>
+            l.rawLine.toLowerCase().includes('user') ||
+            l.rawLine.toLowerCase().includes('session') ||
             l.rawLine.toLowerCase().includes('action')
           )
         }
-        
+
         // Then apply regular filters
         return filterLogs(
           logs,
@@ -398,6 +430,9 @@ export const useLogStore = create<LogStore>()(
         stats: state.stats,
         savedSessions: state.savedSessions,
         alertRules: state.alertRules,
+        isAiInsightCollapsed: state.isAiInsightCollapsed,
+        isFocusMode: state.isFocusMode,
+        settings: state.settings,
       }),
     }
   )

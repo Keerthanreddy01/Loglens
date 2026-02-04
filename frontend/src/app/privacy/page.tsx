@@ -29,7 +29,7 @@ export default function PrivacyPage() {
                     <section id="introduction">
                         <h2 className="text-2xl font-medium text-zinc-300 mb-6">Introduction</h2>
                         <p className="mb-4">
-                            LogLens Inc. ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our log intelligence platform and related services.
+                            LogLens Inc. (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our log intelligence platform and related services.
                         </p>
                         <p>
                             By accessing or using LogLens, you agree to this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please do not access the platform.
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
                     <section id="data-retention" className="border-t border-white/5 pt-16">
                         <h2 className="text-2xl font-medium text-zinc-300 mb-6">Data Retention</h2>
                         <p>
-                            We retain your information for as long as your account is active or as needed to provide you services. Log data is retained according to your plan's retention period. You may request deletion of your data at any time.
+                            We retain your information for as long as your account is active or as needed to provide you services. Log data is retained according to your plan&apos;s retention period. You may request deletion of your data at any time.
                         </p>
                     </section>
 

@@ -29,10 +29,10 @@ export default function TermsPage() {
                     <section id="acceptance">
                         <h2 className="text-2xl font-medium text-zinc-300 mb-6">Acceptance of Terms</h2>
                         <p className="mb-4">
-                            By accessing and using LogLens ("Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this Service.
+                            By accessing and using LogLens (&quot;Service&quot;), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this Service.
                         </p>
                         <p>
-                            These Terms of Service ("Terms") govern your use of our log intelligence platform and related services provided by LogLens Inc. ("LogLens," "we," "us," or "our").
+                            These Terms of Service (&quot;Terms&quot;) govern your use of our log intelligence platform and related services provided by LogLens Inc. (&quot;LogLens,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;).
                         </p>
                     </section>
 
@@ -89,7 +89,7 @@ export default function TermsPage() {
                             Paid plans are billed in advance on a monthly or annual basis. Fees are non-refundable except as required by law or as explicitly stated in your agreement.
                         </p>
                         <p>
-                            We reserve the right to change our pricing with 30 days' notice. Continued use of the Service after a price change constitutes acceptance of the new pricing.
+                            We reserve the right to change our pricing with 30 days&apos; notice. Continued use of the Service after a price change constitutes acceptance of the new pricing.
                         </p>
                     </section>
 
@@ -116,7 +116,7 @@ export default function TermsPage() {
                     <section id="warranties" className="border-t border-white/5 pt-16">
                         <h2 className="text-2xl font-medium text-zinc-300 mb-6">Warranties and Disclaimers</h2>
                         <p className="mb-4">
-                            THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED OR ERROR-FREE.
+                            THE SERVICE IS PROVIDED &quot;AS IS&quot; WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED OR ERROR-FREE.
                         </p>
                         <p>
                             We make no warranty regarding the quality, accuracy, or reliability of any information obtained through the Service.
@@ -162,4 +162,3 @@ export default function TermsPage() {
         </div>
     );
 }
-

@@ -22,10 +22,9 @@ else
     echo -e "${GREEN}✅ No .env files in git${NC}"
 fi
 
-echo ""
 echo "🔑 Step 2: Scanning for potential secrets..."
-# Check for common secret patterns
-if git diff --cached | grep -E '(api[_-]?key|secret[_-]?key|password|private[_-]?key|access[_-]?token|auth[_-]?token).*=.*["\047][A-Za-z0-9+/=]{20,}["\047]'; then
+# Check for common secret patterns (API keys, AWS, Slack, etc.)
+if git diff --cached | grep -E -i '(api[_-]?key|secret[_-]?key|password|private[_-]?key|access[_-]?token|auth[_-]?token|aws[_-]?secret|slack[_-]?token|stripe[_-]?key).*=.*["\047][A-Za-z0-9+/=]{16,}["\047]'; then
     echo -e "${RED}❌ ERROR: Potential secrets found in staged files!${NC}"
     echo "   Review your changes and move secrets to .env"
     CHECKS_FAILED=1

@@ -6,6 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "test:unit": "echo 'No unit tests yet' && exit 0",
+    "test:e2e": "echo 'No e2e tests yet' && exit 0",
     "start": "next start"
   },
   "dependencies": {
