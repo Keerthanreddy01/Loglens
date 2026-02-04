@@ -2,8 +2,8 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { ParsedLog, LogFilter, LogLevel, SavedQuery, AIInsight, LogPattern, AlertRule, AnalysisSession } from './types'
-import { parseLogs, filterLogs, detectPatterns, generateInsights, calculateStats, SAMPLE_LOGS } from './log-parser'
+import type { ParsedLog, LogFilter, LogLevel, SavedQuery, AIInsight, LogPattern, AlertRule, AnalysisSession } from '@/types/log'
+import { parseLogs, filterLogs, detectPatterns, generateInsights, calculateStats, SAMPLE_LOGS } from '@/lib/log-parser'
 
 interface LogStore {
   // Raw input and parsed logs

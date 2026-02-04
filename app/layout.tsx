@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
-import './globals.css'
+import '@/styles/globals.css'
 
 
 

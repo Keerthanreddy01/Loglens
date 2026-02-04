@@ -1,4 +1,4 @@
-import type { ParsedLog, LogLevel, AIInsight, LogPattern, TimelineDataPoint } from './types'
+import type { ParsedLog, LogLevel, AIInsight, LogPattern, TimelineDataPoint } from '@/types/log'
 
 // Timestamp patterns
 const TIMESTAMP_PATTERNS = [

@@ -6,8 +6,9 @@ import Image from 'next/image'
 import { Button } from '@/ui/button'
 import { ArrowRight, Zap, Shield, CheckCircle2, TrendingUp, Activity, Bell, BarChart3, Database, Check } from 'lucide-react'
 import { motion } from 'motion/react'
+import type { User } from '@workos-inc/node'
 
-export default function LandingClient() {
+export default function LandingClient({ user }: { user: User | null }) {
   const heroRef = useRef<HTMLElement>(null)
   const dashboardRef = useRef<HTMLDivElement>(null)
 

@@ -106,7 +106,19 @@ LogLens uses **WorkOS AuthKit** for enterprise-grade authentication:
 - ✅ SQL injection prevention (no raw queries)
 - ✅ Rate limiting on API routes (future enhancement)
 
-### 🚨 Incident Response
+### 💾 Data Persistence & Privacy
+
+#### Local Storage
+LogLens persists some data in your browser's `localStorage` for a better user experience:
+- **Search Filters**: Your last used filters and saved queries.
+- **UI State**: Theme preference, sidebar state, etc.
+- **Log Data**: The currently active log set (persisted via Zustand).
+
+⚠️ **Privacy Note**: Because logs are stored in `localStorage`, they remain on your machine even after closing the tab. If you are handling sensitive logs, use the **"Clear Logs"** button before finishing your session to wipe this data.
+
+#### Session Management
+- Sessions are managed via secure, HTTP-only cookies.
+- Logout completely clears the local session and invalidates the WorkOS token.
 
 If a security incident occurs:
 

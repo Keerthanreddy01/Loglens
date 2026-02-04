@@ -65,11 +65,24 @@ cp .env.example .env.local
 Edit `.env.local` and add your WorkOS credentials:
 
 ```bash
+# WorkOS Configuration
 WORKOS_CLIENT_ID=your_workos_client_id_here
 WORKOS_API_KEY=your_workos_api_key_here
 WORKOS_REDIRECT_URI=http://localhost:3000/api/auth/callback
-WORKOS_COOKIE_PASSWORD=generate_a_secure_32_character_password_here
+WORKOS_COOKIE_PASSWORD=your_32_character_password_here
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NODE_ENV=development
 ```
+
+### 🔒 Environment Variable Security
+
+LogLens implements strict security measures for configuration:
+
+1. **Runtime Validation**: All variables are validated at startup using **Zod** (see `src/lib/env.ts`). The app will fail fast with a detailed error message if any critical configuration is missing.
+2. **Pre-push Scanning**: A custom hook prevents `.env` files and hardcoded secrets from being committed.
+3. **Environment Isolation**: Use separate WorkOS environments for `development`, `staging`, and `production`.
 
 **Generate a secure cookie password:**
 ```bash

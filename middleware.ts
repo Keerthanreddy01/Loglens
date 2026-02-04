@@ -1,4 +1,5 @@
 import { authkitMiddleware } from '@workos-inc/authkit-nextjs';
+import { env } from './lib/validators';
 
 export default authkitMiddleware({
     middlewareAuth: {
@@ -11,7 +12,7 @@ export default authkitMiddleware({
             '/api/auth/logout',
         ],
     },
-    redirectUri: process.env.WORKOS_REDIRECT_URI,
+    redirectUri: env.WORKOS_REDIRECT_URI,
 });
 
 export const config = {
