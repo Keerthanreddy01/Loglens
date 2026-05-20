@@ -22,7 +22,6 @@ const nextConfig = {
   // Disable dev indicators in all environments
   devIndicators: {
     appIsrStatus: false,
-    buildActivity: false,
   },
 
   // Performance headers and caching

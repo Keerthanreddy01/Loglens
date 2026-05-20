@@ -2,8 +2,6 @@
 
 import { cn } from '@/lib/utils'
 import { useLogStore } from '@/store/useLogsStore'
-import { Badge } from '@/components/ui/badge'
-import { NotificationSettings } from '@/components/shared/notification-settings'
 import { motion } from 'motion/react'
 
 const tabs = [

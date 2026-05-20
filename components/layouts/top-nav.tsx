@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useRef, useState, useEffect } from "react";
-import { Search, Bell, Settings, ChevronRight, Upload, Trash2, Keyboard, FileUp, ClipboardPaste, Database, Save, FileDown, Share2, GitCompare, LogOut, User as UserIcon, CheckCircle2, ArrowRight } from "lucide-react";
+import { Search, Bell, Settings, Upload, Trash2, Keyboard, FileUp, ClipboardPaste, Database, LogOut, User as UserIcon, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -21,7 +21,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import {
   Popover,
@@ -29,14 +28,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useLogStore } from "@/store/useLogsStore";
-import { DashboardSettings } from "@/components/shared/dashboard-settings";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "@workos-inc/node";
 
 export function TopNav({ user }: { user?: User }) {
-  const { loadLogs, loadSampleLogs, clearLogs, updateFilter, parsedLogs, stats, saveSession, savedSessions, loadSession, deleteSession, getFilteredLogs, loadLogsForComparison, comparisonLogs, clearComparison } = useLogStore();
+  const { loadLogs, loadSampleLogs, clearLogs, updateFilter, parsedLogs, stats, saveSession, savedSessions, loadSession, deleteSession, getFilteredLogs, loadLogsForComparison } = useLogStore();
   const router = useRouter();
 
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
@@ -47,7 +45,6 @@ export function TopNav({ user }: { user?: User }) {
   const [pasteContent, setPasteContent] = useState("");
   const [globalSearch, setGlobalSearch] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const compareFileInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Global keyboard shortcuts
@@ -155,53 +152,6 @@ export function TopNav({ user }: { user?: User }) {
     } else {
       toast.error("Please enter a session name");
     }
-  };
-
-  const handleExportReport = () => {
-    if (parsedLogs.length === 0) {
-      toast.error("No logs to export");
-      return;
-    }
-    const filtered = getFilteredLogs();
-    const report = {
-      exportedAt: new Date().toISOString(),
-      totalLogs: parsedLogs.length,
-      filteredCount: filtered.length,
-      stats,
-      summary: {
-        errors: stats.errorCount,
-        warnings: stats.warnCount,
-        errorRate: stats.errorRate,
-      },
-      logs: filtered.slice(0, 1000).map((l) => ({
-        timestamp: (l.timestamp instanceof Date ? l.timestamp : new Date(l.timestamp)).toISOString(),
-        level: l.level,
-        service: l.service,
-        message: l.message,
-      })),
-    };
-    const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `loglens-report-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Report exported");
-  };
-
-  const handleShareReport = () => {
-    if (parsedLogs.length === 0) {
-      toast.error("No logs to share");
-      return;
-    }
-    const params = new URLSearchParams();
-    params.set("logs", parsedLogs.length.toString());
-    params.set("errors", stats.errorCount.toString());
-    params.set("ts", Date.now().toString());
-    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-    navigator.clipboard.writeText(url);
-    toast.success("Shareable link copied to clipboard");
   };
 
   const handleSignOut = () => {

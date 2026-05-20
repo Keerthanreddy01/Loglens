@@ -4,17 +4,14 @@ import { cn } from "@/lib/utils";
 import { useLogStore } from "@/store/useLogsStore";
 import { Button } from "@/components/ui/button";
 import {
-  Filter,
   AlertCircle,
   Database,
   Shield,
-  User,
   Star,
   TrendingUp,
   TrendingDown,
   Trash2,
   X,
-  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
@@ -28,7 +25,6 @@ export function LeftSidebar() {
     savedQueries,
     applySavedQuery,
     removeSavedQuery,
-    filter,
     updateFilter,
     setLevelFilter,
     clearLogs,

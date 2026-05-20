@@ -1,22 +1,16 @@
 'use client'
 
-import React, { useRef, useEffect, useMemo, useCallback } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '../components/ui/button'
 import { ArrowRight, Zap, Shield, CheckCircle2, TrendingUp, Activity, Bell, BarChart3, Database, Check } from 'lucide-react'
 import { motion } from 'motion/react'
-import type { User } from '@workos-inc/node'
-
-export default function LandingClient({ user }: { user: User | null }) {
+export default function LandingClient() {
   const heroRef = useRef<HTMLElement>(null)
   const dashboardRef = useRef<HTMLDivElement>(null)
 
-  // Memoize animation variants for better performance
-  const fadeInVariants = useMemo(() => ({
-    initial: { opacity: 0.9, y: 10 },
-    animate: { opacity: 1, y: 0 }
-  }), [])
+
 
   // Optimized scroll handler with useCallback
   const handleAnchorClick = useCallback((e: MouseEvent) => {
@@ -256,12 +250,12 @@ export default function LandingClient({ user }: { user: User | null }) {
                 WHAT IS LOGLENS?
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                Your infrastructure's
+                Your infrastructure&apos;s
                 <br />
                 intelligent observer.
               </h2>
               <p className="text-lg text-zinc-400 leading-relaxed mb-6">
-                LogLens sits between your infrastructure and your engineers. It listens to logs, understands patterns, detects issues, and explains what's wrong—before users feel it.
+                LogLens sits between your infrastructure and your engineers. It listens to logs, understands patterns, detects issues, and explains what&apos;s wrong—before users feel it.
               </p>
               <div className="space-y-4">
                 {[
