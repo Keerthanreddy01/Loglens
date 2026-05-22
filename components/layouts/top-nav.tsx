@@ -160,7 +160,7 @@ export function TopNav() {
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-40 group-focus-within:opacity-100 transition-opacity">
             <kbd className="px-1.5 py-0.5 text-[9px] bg-white/5 rounded border border-white/10 text-white font-mono">
-              {navigator.platform?.includes("Mac") ? "⌘" : "Ctrl"}
+              {typeof window !== "undefined" && navigator.platform?.includes("Mac") ? "⌘" : "Ctrl"}
             </kbd>
             <kbd className="px-1.5 py-0.5 text-[9px] bg-white/5 rounded border border-white/10 text-white font-mono">
               K
