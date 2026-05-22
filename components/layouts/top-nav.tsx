@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { Search, Bell, Upload, Trash2, Keyboard, FileUp, ClipboardPaste, Database, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
 import {
   Dialog,
   DialogContent,
