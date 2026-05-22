@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useRef, useState, useEffect } from "react";
-import { Search, Bell, Settings, Upload, Trash2, Keyboard, FileUp, ClipboardPaste, Database, LogOut, User as UserIcon, CheckCircle2 } from "lucide-react";
+import { Search, Bell, Upload, Trash2, Keyboard, FileUp, ClipboardPaste, Database, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -31,9 +31,7 @@ import { useLogStore } from "@/store/useLogsStore";
 import { toast } from "sonner";
 import Link from "next/link";
 
-import { User } from "@workos-inc/node";
-
-export function TopNav({ user }: { user?: User }) {
+export function TopNav() {
   const { loadLogs, loadSampleLogs, updateFilter, stats, saveSession, savedSessions, loadSession, deleteSession } = useLogStore();
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
@@ -131,13 +129,6 @@ export function TopNav({ user }: { user?: User }) {
       toast.error("Please enter a session name");
     }
   };
-
-  const handleSignOut = () => {
-    toast.success("Logging out...");
-    window.location.href = "/api/auth/logout";
-  };
-
-  const userInitial = user?.email?.[0].toUpperCase() ?? "U";
 
   return (
     <header className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-7xl h-14 bg-[#0A0A0F]/60 backdrop-blur-2xl border border-white/[0.08] rounded-full flex items-center justify-between px-6 shadow-2xl transition-all duration-500">
@@ -262,42 +253,6 @@ export function TopNav({ user }: { user?: User }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="w-px h-6 bg-white/10 mx-2" />
-
-        {/* Profile */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full group p-0 overflow-hidden border border-white/10 hover:border-white/20 transition-all shadow-lg active:scale-95">
-              <Avatar className="h-full w-full bg-gradient-to-br from-indigo-500 to-primary">
-                <AvatarFallback className="bg-transparent text-white text-xs font-bold tracking-tighter">
-                  {userInitial}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-64 mt-4 bg-[#0A0A0F]/90 backdrop-blur-2xl border-white/10 rounded-2xl p-2 shadow-3xl" align="end" forceMount>
-            <div className="flex flex-col space-y-1 p-3">
-              <p className="text-sm font-bold text-white leading-none tracking-tight">{user?.email?.split('@')[0]}</p>
-              <p className="text-[11px] font-medium text-zinc-500 leading-none mt-1 uppercase tracking-wider">
-                {user?.email}
-              </p>
-            </div>
-            <DropdownMenuSeparator className="bg-white/5 my-1 mx-2" />
-            <DropdownMenuItem className="gap-3 py-2.5 rounded-xl group">
-              <UserIcon className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
-              <span className="text-sm font-medium">Organization</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-3 py-2.5 rounded-xl group">
-              <Settings className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
-              <span className="text-sm font-medium">System Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-white/5 my-1 mx-2" />
-            <DropdownMenuItem className="text-destructive gap-3 py-2.5 rounded-xl group hover:bg-destructive/10 transition-colors" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 transition-colors" />
-              <span className="text-sm font-medium">Sign Out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
 
       {/* Paste Modal */}

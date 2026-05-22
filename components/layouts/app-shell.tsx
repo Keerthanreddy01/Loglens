@@ -10,15 +10,13 @@ import { CommandMenu } from '../shared/command-menu'
 import { Button } from '../ui/button'
 import { X } from 'lucide-react'
 import { motion } from 'motion/react'
-import { User } from '@workos-inc/node'
 import { useNotifications } from '../../hooks/use-notifications'
 
 interface AppShellProps {
   children: React.ReactNode;
-  user?: User;
 }
 
-export function AppShell({ children, user }: AppShellProps) {
+export function AppShell({ children }: AppShellProps) {
   useNotifications();
   const { comparisonLogs, clearComparison, parsedLogs, isFocusMode } = useLogStore()
   const mainErrorCount = parsedLogs.filter(l => l.level === 'ERROR').length
@@ -34,7 +32,7 @@ export function AppShell({ children, user }: AppShellProps) {
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/5 blur-[150px] rounded-full" />
       </div>
 
-      {!isFocusMode && <TopNav user={user} />}
+      {!isFocusMode && <TopNav />}
 
       <CommandMenu />
 

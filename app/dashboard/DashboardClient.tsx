@@ -29,11 +29,9 @@ function MainContent() {
   }
 }
 
-import { User } from '@workos-inc/node';
-
-export default function DashboardClient({ user }: { user: User }) {
+export default function DashboardClient() {
   return (
-    <AppShell user={user}>
+    <AppShell>
       <MainContent />
     </AppShell>
   )

@@ -9,12 +9,6 @@ import { z } from 'zod';
  * FAIL FAST: If any required variable is missing, the app will throw an error immediately.
  */
 const envSchema = z.object({
-    // WorkOS Configuration (Required)
-    WORKOS_CLIENT_ID: z.string().min(1, 'WORKOS_CLIENT_ID is required'),
-    WORKOS_API_KEY: z.string().min(1, 'WORKOS_API_KEY is required'),
-    WORKOS_REDIRECT_URI: z.string().url('WORKOS_REDIRECT_URI must be a valid URL'),
-    WORKOS_COOKIE_PASSWORD: z.string().min(32, 'WORKOS_COOKIE_PASSWORD must be at least 32 characters'),
-
     // Application Configuration
     NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
