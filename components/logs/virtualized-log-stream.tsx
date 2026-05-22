@@ -46,10 +46,9 @@ interface LogEntryProps {
     isSelected: boolean;
     onSelect: () => void;
     viewMode: "compact" | "comfortable";
-    index: number;
 }
 
-const LogEntry = memo(function LogEntry({ log, isSelected, onSelect, viewMode, index }: LogEntryProps) {
+const LogEntry = memo(function LogEntry({ log, isSelected, onSelect, viewMode }: LogEntryProps) {
     const styles = levelStyles[log.level];
     const dateObj = log.timestamp instanceof Date ? log.timestamp : new Date(log.timestamp);
     const timestamp = dateObj.toLocaleTimeString("en-US", {
@@ -180,7 +179,6 @@ export function VirtualizedLogStream({
                             isSelected={selectedLogId === logs[virtualRow.index].id}
                             onSelect={() => selectLog(logs[virtualRow.index].id)}
                             viewMode={viewMode}
-                            index={virtualRow.index}
                         />
                     </div>
                 ))}

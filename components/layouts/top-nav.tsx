@@ -30,13 +30,11 @@ import {
 import { useLogStore } from "@/store/useLogsStore";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import { User } from "@workos-inc/node";
 
 export function TopNav({ user }: { user?: User }) {
-  const { loadLogs, loadSampleLogs, clearLogs, updateFilter, parsedLogs, stats, saveSession, savedSessions, loadSession, deleteSession, getFilteredLogs, loadLogsForComparison } = useLogStore();
-  const router = useRouter();
-
+  const { loadLogs, loadSampleLogs, updateFilter, stats, saveSession, savedSessions, loadSession, deleteSession } = useLogStore();
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSaveSessionOpen, setIsSaveSessionOpen] = useState(false);
@@ -97,21 +95,6 @@ export function TopNav({ user }: { user?: User }) {
     event.target.value = "";
   };
 
-  const handleCompareFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target?.result as string;
-      if (content) {
-        loadLogsForComparison(content);
-        toast.success(`Loaded ${content.split("\n").filter(l => l.trim()).length} lines for comparison`);
-      }
-    };
-    reader.readAsText(file);
-    event.target.value = "";
-  };
-
   const handlePaste = () => {
     if (pasteContent.trim()) {
       loadLogs(pasteContent);
@@ -136,11 +119,6 @@ export function TopNav({ user }: { user?: User }) {
   const handleLoadSample = () => {
     loadSampleLogs();
     toast.success("Sample logs loaded");
-  };
-
-  const handleClearLogs = () => {
-    clearLogs();
-    toast.success("All logs cleared");
   };
 
   const handleSaveSession = () => {
@@ -431,6 +409,9 @@ export function TopNav({ user }: { user?: User }) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* File Input */}
+      <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} accept=".log,.txt,.json" />
 
       {/* Keyboard Shortcuts Modal */}
       <Dialog open={isShortcutsOpen} onOpenChange={setIsShortcutsOpen}>

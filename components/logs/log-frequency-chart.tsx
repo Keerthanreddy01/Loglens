@@ -3,7 +3,7 @@
 import { useMemo, useCallback, useState } from "react";
 import {
   Area,
-  AreaChart,
+
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -91,7 +91,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 export function LogFrequencyChart() {
   const { parsedLogs, setLevelFilter } = useLogStore();
   const [timeRange, setTimeRange] = useState<TimeRange>("all");
-  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+  const [timeRange, setTimeRange] = useState<TimeRange>("all");
 
   const data = useMemo(() => {
     if (parsedLogs.length === 0) return [];
@@ -197,12 +197,6 @@ export function LogFrequencyChart() {
             data={data}
             margin={{ top: 5, right: 5, left: -15, bottom: 0 }}
             onClick={handleChartClick}
-            onMouseMove={(state) => {
-              if (state?.activeTooltipIndex !== undefined) {
-                setHoveredPoint(state.activeTooltipIndex);
-              }
-            }}
-            onMouseLeave={() => setHoveredPoint(null)}
           >
             <defs>
               <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">

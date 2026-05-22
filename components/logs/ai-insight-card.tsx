@@ -1,6 +1,6 @@
 import { Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 import { useLogStore } from "@/store/useLogsStore";
-import { Badge } from "@/components/ui/badge";
+
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 

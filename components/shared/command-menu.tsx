@@ -13,7 +13,6 @@ import {
 import {
     Activity,
     LayoutDashboard,
-    Settings,
     Shield,
     Terminal,
     Trash,

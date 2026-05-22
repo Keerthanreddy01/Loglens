@@ -6,10 +6,7 @@ import {
     Sparkles,
     Volume2,
     Layout,
-    Moon,
-    Maximize2,
-    BellRing,
-    Check
+    Maximize2
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Switch } from "../ui/switch";
@@ -27,9 +24,7 @@ export function DashboardSettings() {
         settings,
         updateSettings,
         viewMode,
-        setViewMode,
-        isAiInsightCollapsed,
-        toggleAiInsightCollapsed
+        setViewMode
     } = useLogStore();
 
     const handleTestSound = () => {
@@ -97,7 +92,7 @@ export function DashboardSettings() {
                                                     "h-6 flex-1 text-[10px] capitalize",
                                                     settings.volume === v && "bg-primary/10 border-primary/50 text-primary"
                                                 )}
-                                                onClick={() => updateSettings({ volume: v as any })}
+                                                onClick={() => updateSettings({ volume: v as "low" | "medium" | "high" })}
                                             >
                                                 {v}
                                             </Button>

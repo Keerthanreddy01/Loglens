@@ -10,7 +10,7 @@ import { EmptyState } from "./empty-state";
 import { useLogStore } from "../../store/useLogsStore";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { ChevronUp, ChevronDown, Maximize2, Minimize2, GripHorizontal } from "lucide-react";
+import { ChevronUp, ChevronDown, Maximize2, Minimize2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 import { motion, AnimatePresence } from "motion/react";

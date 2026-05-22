@@ -5,8 +5,7 @@ import {
     BellRing,
     ShieldAlert,
     AlertTriangle,
-    Info,
-    Check
+    Info
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -16,7 +15,6 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export function NotificationSettings() {
     const { settings, updateSettings } = useLogStore();

@@ -5,14 +5,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLogStore } from "@/store/useLogsStore";
-import { highlightLogMessage } from "@/lib/log-parser";
 import type { ParsedLog, LogLevel } from "@/types/log";
 import {
   Search,
   X,
   Download,
   ChevronDown,
-  Copy,
   FileJson,
   FileText,
   Clipboard,
@@ -21,7 +19,6 @@ import {
   SearchX,
   RotateCcw,
   Pause,
-  Play,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -178,7 +175,7 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setLevelFilter, updateFilter, selectLog, selectedLogId, logs, isLiveTailEnabled, setLiveTail]);
+  }, [setLevelFilter, updateFilter, selectLog, selectedLogId, logs, isLiveTailEnabled, setLiveTail, navigateLog]);
 
   const navigateLog = useCallback((direction: number) => {
     if (logs.length === 0) return;
@@ -284,7 +281,7 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
         );
         filename += ".json";
         break;
-      case "csv":
+      case "csv": {
         const headers = "Timestamp,Level,Service,Message,Request ID\n";
         const rows = logs
           .map((l) => {
@@ -295,6 +292,7 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
         content = headers + rows;
         filename += ".csv";
         break;
+      }
       case "clipboard":
         content = logs.map((l) => l.rawLine).join("\n");
         navigator.clipboard.writeText(content);

@@ -6,6 +6,7 @@ class AudioSystem {
 
     private initContext() {
         if (!this.context) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             this.context = new (window.AudioContext || (window as any).webkitAudioContext)();
         }
         if (this.context.state === 'suspended') {
@@ -59,6 +60,7 @@ class AudioSystem {
                 osc.stop(now + 0.4);
             }
         } catch (e) {
+            // eslint-disable-next-line no-console
             console.warn('Audio playback failed', e);
         }
     }

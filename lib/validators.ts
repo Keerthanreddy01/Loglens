@@ -30,7 +30,9 @@ const envSchema = z.object({
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
+    // eslint-disable-next-line no-console
     console.error('❌ Invalid environment variables:');
+    // eslint-disable-next-line no-console
     console.error(JSON.stringify(parsedEnv.error.format(), null, 2));
 
     // In production, we want to exit the process if configuration is wrong
