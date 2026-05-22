@@ -91,7 +91,6 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 export function LogFrequencyChart() {
   const { parsedLogs, setLevelFilter } = useLogStore();
   const [timeRange, setTimeRange] = useState<TimeRange>("all");
-  const [timeRange, setTimeRange] = useState<TimeRange>("all");
 
   const data = useMemo(() => {
     if (parsedLogs.length === 0) return [];

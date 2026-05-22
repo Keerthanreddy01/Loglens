@@ -91,6 +91,28 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const navigateLog = useCallback((direction: number) => {
+    if (logs.length === 0) return;
+
+    const currentIndex = selectedLogId ? logs.findIndex((l) => l.id === selectedLogId) : -1;
+    let newIndex: number;
+
+    if (currentIndex === -1) {
+      newIndex = direction > 0 ? 0 : logs.length - 1;
+    } else {
+      newIndex = currentIndex + direction;
+      if (newIndex < 0) newIndex = 0;
+      if (newIndex >= logs.length) newIndex = logs.length - 1;
+    }
+
+    const newLog = logs[newIndex];
+    if (newLog) {
+      selectLog(newLog.id);
+      const element = scrollContainerRef.current?.querySelector(`[data-index="${newIndex}"]`);
+      element?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }, [logs, selectedLogId, selectLog]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -177,27 +199,7 @@ export function LiveStreamLog({ logs }: LiveStreamLogProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [setLevelFilter, updateFilter, selectLog, selectedLogId, logs, isLiveTailEnabled, setLiveTail, navigateLog]);
 
-  const navigateLog = useCallback((direction: number) => {
-    if (logs.length === 0) return;
 
-    const currentIndex = selectedLogId ? logs.findIndex((l) => l.id === selectedLogId) : -1;
-    let newIndex: number;
-
-    if (currentIndex === -1) {
-      newIndex = direction > 0 ? 0 : logs.length - 1;
-    } else {
-      newIndex = currentIndex + direction;
-      if (newIndex < 0) newIndex = 0;
-      if (newIndex >= logs.length) newIndex = logs.length - 1;
-    }
-
-    const newLog = logs[newIndex];
-    if (newLog) {
-      selectLog(newLog.id);
-      const element = scrollContainerRef.current?.querySelector(`[data-index="${newIndex}"]`);
-      element?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    }
-  }, [logs, selectedLogId, selectLog]);
 
   // Debounced search
   useEffect(() => {
